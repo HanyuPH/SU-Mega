@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "SU Mega – C2",
+  "short_name": "SU Mega",
+  "description": "Aplicativo oficial da Carteira SU Mega – C2 com 705 jogos e controle local de status.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f7f4",
+  "theme_color": "#16834f",
+  "lang": "pt-BR",
+  "categories": ["utilities"],
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
