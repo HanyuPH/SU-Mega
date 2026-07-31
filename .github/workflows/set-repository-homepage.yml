@@ -8,16 +8,31 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   set-homepage:
     runs-on: ubuntu-latest
     steps:
       - name: Definir descrição e homepage
+        id: homepage
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh api --method PATCH "repos/${{ github.repository }}" \
             -f description="Sistema Oficial SU Mega" \
             -f homepage="https://hanyuph.github.io/SU-Mega/"
+
+      - name: Registrar resultado da tentativa
+        run: |
+          if [ "${{ steps.homepage.outcome }}" = "success" ]; then
+            echo "success" > .homepage-update-status
+          else
+            echo "failed" > .homepage-update-status
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .homepage-update-status
+          git commit -m "Record homepage update result" || exit 0
+          git push
