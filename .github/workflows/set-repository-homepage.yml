@@ -1,0 +1,23 @@
+name: Definir link oficial do repositório
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/set-repository-homepage.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  set-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Definir descrição e homepage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method PATCH "repos/${{ github.repository }}" \
+            -f description="Sistema Oficial SU Mega" \
+            -f homepage="https://hanyuph.github.io/SU-Mega/"
