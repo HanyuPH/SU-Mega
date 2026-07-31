@@ -5,11 +5,7 @@
   const WALLET = "C2";
   const STORAGE_KEY = "su-mega-c2-status-v1";
   const SYSTEM_ORDER = ["Ouro", "Diamante", "Platina", "Safira", "Ônix"];
-  const STATUS_LABELS = {
-    pendente: "Pendente",
-    registrado: "Registrado",
-    apostado: "Apostado"
-  };
+  const STATUS_LABELS = { pendente: "Pendente", registrado: "Registrado", apostado: "Apostado" };
   const games = Array.isArray(globalThis.SU_MEGA_GAMES) ? globalThis.SU_MEGA_GAMES : [];
   const core = globalThis.SUMegaCore;
   const gameIds = new Set(games.map(game => game.id));
@@ -38,22 +34,19 @@
 
   let installPrompt = null;
   let toastTimer = null;
-
   const padGame = core.padGame;
   const padNumber = core.padNumber;
 
   function formatDate(value) {
     try {
-      return new Intl.DateTimeFormat("pt-BR", {
-        dateStyle: "short",
-        timeStyle: "short"
-      }).format(new Date(value));
+      return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
     } catch {
       return "agora";
     }
   }
 
   function resetStateObject() {
+    for (const key of Object.keys(states)) delete states[key];
     Object.assign(states, core.createDefaultStates(games));
   }
 
@@ -82,13 +75,7 @@
   }
 
   function persistStates(showFeedback = true) {
-    const payload = {
-      app: APP_NAME,
-      wallet: WALLET,
-      schema: 1,
-      savedAt: new Date().toISOString(),
-      statuses: states
-    };
+    const payload = { app: APP_NAME, wallet: WALLET, schema: 1, savedAt: new Date().toISOString(), statuses: states };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       elements.saveStatus.textContent = `Salvo em ${formatDate(payload.savedAt)}`;
@@ -106,9 +93,7 @@
       elements.emptyState.textContent = "A carteira oficial não foi carregada corretamente.";
       return;
     }
-
     const fragment = document.createDocumentFragment();
-
     for (const system of SYSTEM_ORDER) {
       const systemGames = games.filter(game => game.system === system);
       const section = elements.systemTemplate.content.firstElementChild.cloneNode(true);
@@ -116,7 +101,6 @@
       section.querySelector(".system-title").textContent = system;
       section.querySelector(".system-count").textContent = `${systemGames.length} jogos`;
       const grid = section.querySelector(".games");
-
       for (const game of systemGames) {
         const card = elements.gameTemplate.content.firstElementChild.cloneNode(true);
         card.dataset.id = game.id;
@@ -126,7 +110,6 @@
         card.querySelector(".game-title").textContent = `Jogo ${padGame(game.number)}`;
         card.querySelector(".game-meta").textContent = `${game.system} • Grupo ${game.group}`;
         card.querySelector(".status-actions").setAttribute("aria-label", `Status do jogo ${padGame(game.number)} do bloco ${game.system}`);
-
         const numberContainer = card.querySelector(".numbers");
         numberContainer.setAttribute("aria-label", game.numbers.map(padNumber).join(", "));
         for (const number of game.numbers) {
@@ -135,15 +118,12 @@
           ball.textContent = padNumber(number);
           numberContainer.appendChild(ball);
         }
-
         grid.appendChild(card);
         cardById.set(game.id, card);
       }
-
       sectionBySystem.set(system, section);
       fragment.appendChild(section);
     }
-
     elements.systems.replaceChildren(fragment);
     refreshAllCards();
     updateCounters();
@@ -174,6 +154,7 @@
     refreshCard(id);
     updateCounters();
     applyFilters();
+    globalThis.SUMegaContests?.refresh();
     const game = games.find(item => item.id === id);
     announce(`${game.system} • Jogo ${padGame(game.number)}: ${STATUS_LABELS[status]}`);
   }
@@ -186,31 +167,22 @@
     document.getElementById("count-apostado").textContent = String(count.apostado);
   }
 
-  const parseGameFilter = core.parseGameFilter;
-  const parseNumberFilter = core.parseNumberFilter;
-
   function applyFilters() {
-    const selectedStatus = elements.filters.status.value;
-    const selectedSystem = elements.filters.system.value;
-    const selectedGroup = elements.filters.group.value;
-    const gameNumber = parseGameFilter(elements.filters.game.value);
-    const numberQuery = parseNumberFilter(elements.filters.numbers.value);
+    const gameNumber = core.parseGameFilter(elements.filters.game.value);
+    const numberQuery = core.parseNumberFilter(elements.filters.numbers.value);
     const visibleBySystem = Object.fromEntries(SYSTEM_ORDER.map(system => [system, 0]));
     let visible = 0;
-
     elements.filters.game.setAttribute("aria-invalid", String(Number.isNaN(gameNumber)));
     elements.filters.numbers.setAttribute("aria-invalid", String(!numberQuery.valid));
-
     for (const game of games) {
       const status = states[game.id] || "pendente";
       const show = core.matchesGame(game, status, {
-        status: selectedStatus,
-        system: selectedSystem,
-        group: selectedGroup,
+        status: elements.filters.status.value,
+        system: elements.filters.system.value,
+        group: elements.filters.group.value,
         gameNumber,
         numberQuery
       });
-
       const card = cardById.get(game.id);
       card.hidden = !show;
       if (show) {
@@ -218,14 +190,12 @@
         visibleBySystem[game.system] += 1;
       }
     }
-
     for (const system of SYSTEM_ORDER) {
       const section = sectionBySystem.get(system);
       const count = visibleBySystem[system];
       section.hidden = count === 0;
       section.querySelector(".system-count").textContent = `${count} de 141 jogos`;
     }
-
     elements.visibleCount.textContent = String(visible);
     document.getElementById("count-visible").textContent = String(visible);
     elements.emptyState.hidden = visible !== 0;
@@ -241,36 +211,35 @@
     announce("Filtros limpos");
   }
 
+  function downloadJson(payload, filename) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   function exportBackup() {
-    const payload = {
+    downloadJson({
       app: APP_NAME,
       wallet: WALLET,
       schema: 1,
       gameCount: games.length,
       exportedAt: new Date().toISOString(),
       statuses: states
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `SU-Mega-C2-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, `SU-Mega-C2-backup-${new Date().toISOString().slice(0, 10)}.json`);
     announce("Backup exportado");
-  }
-
-  function validateBackup(payload) {
-    return core.validateBackup(payload, games, STATUS_LABELS, APP_NAME, WALLET);
   }
 
   function importBackup(file) {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const incoming = validateBackup(JSON.parse(String(reader.result)));
+        const incoming = core.validateBackup(JSON.parse(String(reader.result)), games, STATUS_LABELS, APP_NAME, WALLET);
         if (!confirm("Importar este backup substituirá as marcações atuais. Deseja continuar?")) return;
         resetStateObject();
         Object.assign(states, incoming);
@@ -278,6 +247,7 @@
         refreshAllCards();
         updateCounters();
         applyFilters();
+        globalThis.SUMegaContests?.refresh();
         announce("Backup importado com sucesso");
       } catch (error) {
         alert(`Não foi possível importar o backup. ${error.message || ""}`.trim());
@@ -294,6 +264,7 @@
     refreshAllCards();
     updateCounters();
     applyFilters();
+    globalThis.SUMegaContests?.refresh();
     announce("Estado original restaurado");
   }
 
@@ -312,12 +283,25 @@
     toastTimer = setTimeout(() => toast.classList.remove("show"), 1900);
   }
 
+  function setupTabs() {
+    const tabs = [...document.querySelectorAll(".view-tab")];
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+      const target = tab.dataset.view;
+      tabs.forEach(item => {
+        const active = item === tab;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-selected", String(active));
+      });
+      document.querySelectorAll(".view-panel").forEach(panel => {
+        panel.hidden = panel.id !== target;
+      });
+      window.scrollTo({ top: document.querySelector(".summary").offsetTop, behavior: "smooth" });
+    }));
+  }
+
   function showInstallHelp() {
-    if (typeof elements.installDialog.showModal === "function") {
-      elements.installDialog.showModal();
-    } else {
-      alert("No iPhone, abra no Safari, toque em Compartilhar e depois em Adicionar à Tela de Início.");
-    }
+    if (typeof elements.installDialog.showModal === "function") elements.installDialog.showModal();
+    else alert("No iPhone, abra no Safari, toque em Compartilhar e depois em Adicionar à Tela de Início.");
   }
 
   elements.systems.addEventListener("click", event => {
@@ -326,11 +310,9 @@
     const card = button.closest(".game-card");
     if (card) setStatus(card.dataset.id, button.dataset.status);
   });
-
   for (const filter of Object.values(elements.filters)) {
     filter.addEventListener(filter.tagName === "INPUT" ? "input" : "change", applyFilters);
   }
-
   document.getElementById("clear-filters").addEventListener("click", clearFilters);
   document.getElementById("export-backup").addEventListener("click", exportBackup);
   document.getElementById("print-games").addEventListener("click", () => window.print());
@@ -345,7 +327,6 @@
     event.preventDefault();
     installPrompt = event;
   });
-
   elements.installButton.addEventListener("click", async () => {
     if (installPrompt) {
       installPrompt.prompt();
@@ -355,13 +336,13 @@
     }
     showInstallHelp();
   });
-
   window.addEventListener("storage", event => {
     if (event.key !== STORAGE_KEY) return;
     loadStates();
     refreshAllCards();
     updateCounters();
     applyFilters();
+    globalThis.SUMegaContests?.refresh();
     announce("Marcações sincronizadas com outra aba");
   });
 
@@ -375,4 +356,7 @@
 
   loadStates();
   buildInterface();
+  setupTabs();
+  globalThis.SUMegaApp = { app: APP_NAME, wallet: WALLET, games, states, labels: STATUS_LABELS, padGame, padNumber, announce, downloadJson };
+  globalThis.SUMegaContests?.init(globalThis.SUMegaApp);
 })();
