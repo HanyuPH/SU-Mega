@@ -1,0 +1,17 @@
+{
+  "project": "SU Mega",
+  "wallet": "C2",
+  "sourceWorkbook": "SU Mega - C2.xlsx",
+  "sourceWorkbookSha256": "2a91121e89965cd62ced6591f57ba716ebfc956cef446390899d3d2a54ed9f27",
+  "dataSha256": "518af4d8fc79783d4eecc4ab7c233424c51640a7372bf1d25437ebf3fa5af370",
+  "totalGames": 705,
+  "systems": [
+    {"name": "Ouro", "games": 141},
+    {"name": "Diamante", "games": 141},
+    {"name": "Platina", "games": 141},
+    {"name": "Safira", "games": 141},
+    {"name": "Ônix", "games": 141}
+  ],
+  "groups": ["001–020", "021–040", "041–060", "061–080", "081–100", "101–120", "121–141"],
+  "generatedAt": "2026-07-31"
+}
