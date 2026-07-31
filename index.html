@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#16834f">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SU Mega">
+  <meta name="description" content="Aplicativo oficial da Carteira SU Mega – C2 para consulta e controle dos 705 jogos.">
+  <title>SU Mega – C2</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/games.js" defer></script>
+  <script src="core.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><span>SU</span><strong>MEGA</strong></div>
+        <div>
+          <p class="eyebrow">Carteira Oficial</p>
+          <h1>SU Mega – C2</h1>
+          <p class="subtitle">705 jogos • 5 blocos oficiais • controle local e privado</p>
+        </div>
+      </div>
+      <button class="install-btn" id="install-btn" type="button">Instalar aplicativo</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="summary" aria-label="Resumo da carteira">
+      <article class="metric total"><span>Total de jogos</span><strong id="count-total">705</strong></article>
+      <article class="metric pending"><span>Pendentes</span><strong id="count-pendente">705</strong></article>
+      <article class="metric registered"><span>Registrados</span><strong id="count-registrado">0</strong></article>
+      <article class="metric bet"><span>Apostados</span><strong id="count-apostado">0</strong></article>
+      <article class="metric visible"><span>Visíveis</span><strong id="count-visible">705</strong></article>
+    </section>
+
+    <section class="toolbar" aria-label="Filtros, backup e ações">
+      <div class="toolbar-top">
+        <div>
+          <h2>Controle dos jogos</h2>
+          <p id="save-status" aria-live="polite">Carregando marcações…</p>
+        </div>
+        <div class="actions">
+          <button id="export-backup" class="button primary" type="button">Exportar backup</button>
+          <label class="button" for="import-file">Importar backup</label>
+          <input id="import-file" type="file" accept="application/json,.json" hidden>
+          <button id="print-games" class="button" type="button">Imprimir visíveis</button>
+          <button id="reset-status" class="button danger" type="button">Restaurar padrão</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <label>
+          <span>Status</span>
+          <select id="filter-status">
+            <option value="all">Todos</option>
+            <option value="pendente">Pendentes</option>
+            <option value="registrado">Registrados</option>
+            <option value="apostado">Apostados</option>
+          </select>
+        </label>
+        <label>
+          <span>Sistema / bloco</span>
+          <select id="filter-system">
+            <option value="all">Todos</option>
+            <option value="Ouro">Ouro</option>
+            <option value="Diamante">Diamante</option>
+            <option value="Platina">Platina</option>
+            <option value="Safira">Safira</option>
+            <option value="Ônix">Ônix</option>
+          </select>
+        </label>
+        <label>
+          <span>Grupo oficial</span>
+          <select id="filter-group">
+            <option value="all">Todos</option>
+            <option value="001–020">001–020</option>
+            <option value="021–040">021–040</option>
+            <option value="041–060">041–060</option>
+            <option value="061–080">061–080</option>
+            <option value="081–100">081–100</option>
+            <option value="101–120">101–120</option>
+            <option value="121–141">121–141</option>
+          </select>
+        </label>
+        <label>
+          <span>Número do jogo</span>
+          <input id="filter-game" type="search" inputmode="numeric" autocomplete="off" placeholder="Ex.: 042">
+        </label>
+        <label class="numbers-search">
+          <span>Dezenas</span>
+          <input id="filter-numbers" type="search" inputmode="numeric" autocomplete="off" placeholder="Ex.: 01 15 25">
+        </label>
+      </div>
+
+      <div class="filter-footer">
+        <p class="results-line"><strong id="visible-count">705</strong> jogos exibidos</p>
+        <button id="clear-filters" class="button compact" type="button">Limpar filtros</button>
+      </div>
+    </section>
+
+    <section id="systems" class="systems" aria-live="polite"></section>
+    <div id="empty-state" class="empty" hidden>Nenhum jogo corresponde aos filtros informados.</div>
+  </main>
+
+  <footer>
+    <p>SU Mega – C2 • Formato derivado da planilha oficial. As marcações ficam somente neste dispositivo.</p>
+  </footer>
+
+  <dialog id="install-dialog" class="install-dialog">
+    <form method="dialog">
+      <h2>Instalar SU Mega</h2>
+      <p>No iPhone, abra esta página no Safari, toque em <strong>Compartilhar</strong> e escolha <strong>Adicionar à Tela de Início</strong>.</p>
+      <p>Em navegadores compatíveis, use o botão de instalação exibido pelo próprio navegador.</p>
+      <button class="button primary" value="close">Entendi</button>
+    </form>
+  </dialog>
+
+  <template id="system-template">
+    <section class="system-section">
+      <div class="system-heading">
+        <div>
+          <p class="system-kicker">Bloco oficial</p>
+          <h2 class="system-title"></h2>
+        </div>
+        <span class="system-count"></span>
+      </div>
+      <div class="games"></div>
+    </section>
+  </template>
+
+  <template id="game-template">
+    <article class="game-card">
+      <div class="card-top">
+        <div>
+          <h3 class="game-title"></h3>
+          <p class="game-meta"></p>
+        </div>
+        <span class="status-pill"></span>
+      </div>
+      <div class="numbers" aria-label="Dezenas do jogo"></div>
+      <div class="status-actions" role="group" aria-label="Status do jogo">
+        <button type="button" data-status="pendente">Pendente</button>
+        <button type="button" data-status="registrado">Registrado</button>
+        <button type="button" data-status="apostado">Apostado</button>
+      </div>
+    </article>
+  </template>
+</body>
+</html>
