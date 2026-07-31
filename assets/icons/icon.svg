@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SU Mega">
+  <rect width="512" height="512" rx="112" fill="#16834f"/>
+  <circle cx="256" cy="238" r="166" fill="#ffffff"/>
+  <text x="256" y="238" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="124" font-weight="900" fill="#16834f">SU</text>
+  <text x="256" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="900" letter-spacing="8" fill="#0d6038">MEGA</text>
+</svg>
