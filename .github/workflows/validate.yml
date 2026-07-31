@@ -1,0 +1,26 @@
+name: Validate SU Mega C2
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate official games
+        run: node tests/validate-data.mjs
+      - name: Validate filters, counters and backup
+        run: node tests/validate-app.mjs
+      - name: Validate PWA structure and offline fallback
+        run: node tests/validate-pwa.mjs
