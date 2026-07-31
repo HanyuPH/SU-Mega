@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "game": "MEGA_SENA",
+  "number": 3038,
+  "date": "2026-07-30",
+  "numbers": [30, 35, 38, 39, 46, 50],
+  "drawOrder": [38, 50, 35, 39, 30, 46],
+  "source": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3038",
+  "official": true,
+  "updatedAt": "2026-07-31T14:00:00.000Z",
+  "accumulated": true,
+  "location": "SÃO PAULO, SP",
+  "prizeTiers": [
+    {"hits": 6, "winners": 0, "prize": 0, "description": "6 acertos"},
+    {"hits": 5, "winners": 41, "prize": 64733.96, "description": "5 acertos"},
+    {"hits": 4, "winners": 2549, "prize": 1716.31, "description": "4 acertos"}
+  ],
+  "nextContest": {"number": 3039, "date": "2026-08-01", "estimatedPrize": 100000000}
+}
