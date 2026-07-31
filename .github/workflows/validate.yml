@@ -24,3 +24,5 @@ jobs:
         run: node tests/validate-app.mjs
       - name: Validate PWA structure and offline fallback
         run: node tests/validate-pwa.mjs
+      - name: Validate contests, comparison and official results
+        run: node tests/validate-contests.mjs
