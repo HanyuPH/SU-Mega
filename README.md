@@ -4,9 +4,7 @@ Aplicativo web oficial derivado da **Carteira Oficial SU Mega – C2**.
 
 ## Fonte oficial
 
-A única fonte de verdade dos jogos é a planilha:
-
-`source/SU Mega - C2.xlsx`
+A única fonte de verdade dos jogos é a planilha oficial **SU Mega - C2.xlsx**, utilizada para gerar e auditar os dados publicados neste repositório. A planilha permanece sob controle do projeto e não é substituída pelo aplicativo.
 
 O aplicativo preserva exatamente:
 
@@ -38,19 +36,22 @@ Qualquer alteração futura deve ser realizada primeiro na planilha oficial e so
 - `styles.css` — visual responsivo;
 - `core.js` — regras puras de filtros, contadores e validação;
 - `app.js` — interface, armazenamento, backup e instalação;
-- `data/games.js` — dados derivados da planilha oficial;
+- `data/games-01.js` a `data/games-10.js` — dados derivados da planilha oficial;
 - `data/metadata.json` — metadados e hashes de integridade;
 - `manifest.json` — configuração PWA;
 - `service-worker.js` — cache e funcionamento offline;
-- `assets/icons/` — ícones do aplicativo;
-- `source/` — planilha oficial usada na geração;
+- `assets/icons/icon.svg` — ícone vetorial do aplicativo;
 - `tests/validate-data.mjs` — auditoria automatizada dos jogos;
-- `VALIDATION.md` — relatório de validação.
+- `tests/validate-app.mjs` — testes de filtros, contadores e backup;
+- `tests/validate-pwa.mjs` — testes estruturais do PWA e cache offline;
+- `VALIDATION.md` — relatório completo de validação.
 
-## Validação dos dados
+## Validação
 
 ```bash
 node tests/validate-data.mjs
+node tests/validate-app.mjs
+node tests/validate-pwa.mjs
 ```
 
 Hash SHA-256 da planilha oficial:
