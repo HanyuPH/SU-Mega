@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-cloud-v2";
+const CACHE_NAME = "su-mega-c2-cloud-v3";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const APP_ASSETS = [
   "./app.js",
   "./official-results.js",
   "./cloud-sync-v2.js",
+  "./cloud-enhancements.js",
   "./data/games-01.js",
   "./data/games-02.js",
   "./data/games-03.js",
@@ -49,10 +50,11 @@ async function officialResultsWithCloud(request) {
   } catch {
     response = await cache.match(request);
   }
-  if (!response) return new Response("import('./cloud-sync-v2.js');", { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  const fallback = "import('./cloud-sync-v2.js').then(()=>import('./cloud-enhancements.js'));";
+  if (!response) return new Response(fallback, { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
   const source = await response.text();
-  const cloudLoader = "\n;import('./cloud-sync-v2.js').catch(error=>console.error('SU Mega Cloud v2:',error));\n";
-  return new Response(source.includes("cloud-sync-v2.js") ? source : source + cloudLoader, {
+  const cloudLoader = "\n;import('./cloud-sync-v2.js').then(()=>import('./cloud-enhancements.js')).catch(error=>console.error('Ecossistema SU:',error));\n";
+  return new Response(source.includes("cloud-enhancements.js") ? source : source + cloudLoader, {
     status: 200,
     headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" }
   });
