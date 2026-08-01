@@ -9,7 +9,7 @@ const APP_ASSETS = [
   "./contests.js",
   "./app.js",
   "./official-results.js",
-  "./cloud-sync.js",
+  "./cloud-sync-v2.js",
   "./data/games-01.js",
   "./data/games-02.js",
   "./data/games-03.js",
@@ -40,31 +40,32 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-function injectCloudModule(html) {
-  if (html.includes("cloud-sync.js")) return html;
-  return html.replace("</body>", "  <script type=\"module\" src=\"./cloud-sync.js?v=2\"></script>\n</body>");
-}
-
-async function navigationWithCloud(request) {
+async function officialResultsWithCloud(request) {
   const cache = await caches.open(CACHE_NAME);
   let response;
   try {
     response = await fetch(request, { cache: "no-store" });
-    if (response.ok) await cache.put("./index.html", response.clone());
+    if (response.ok) await cache.put(request, response.clone());
   } catch {
-    response = await cache.match("./index.html");
+    response = await cache.match(request);
   }
-  if (!response) return new Response("Aplicativo indisponível", { status: 503 });
-  const html = injectCloudModule(await response.text());
-  return new Response(html, {
+  if (!response) return new Response("import('./cloud-sync-v2.js');", { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  const source = await response.text();
+  const cloudLoader = "\n;import('./cloud-sync-v2.js').catch(error=>console.error('SU Mega Cloud v2:',error));\n";
+  return new Response(source.includes("cloud-sync-v2.js") ? source : source + cloudLoader, {
     status: 200,
-    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }
+    headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" }
   });
 }
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
+
+  if (url.origin === self.location.origin && url.pathname.endsWith("/official-results.js")) {
+    event.respondWith(officialResultsWithCloud(event.request));
+    return;
+  }
 
   if (url.pathname.endsWith("/data/ultimo-concurso.json") || url.pathname.endsWith("/data/concursos-oficiais.json")) {
     event.respondWith(
@@ -82,7 +83,15 @@ self.addEventListener("fetch", event => {
   }
 
   if (event.request.mode === "navigate") {
-    event.respondWith(navigationWithCloud(event.request));
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
+          return response;
+        })
+        .catch(() => caches.match("./index.html"))
+    );
     return;
   }
 
