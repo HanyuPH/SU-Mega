@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-v2";
+const CACHE_NAME = "su-mega-c2-cloud-v1";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_ASSETS = [
   "./contests.js",
   "./app.js",
   "./official-results.js",
+  "./cloud-sync.js",
   "./data/games-01.js",
   "./data/games-02.js",
   "./data/games-03.js",
@@ -39,9 +40,32 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
+async function officialResultsWithCloud(request) {
+  const cache = await caches.open(CACHE_NAME);
+  let response;
+  try {
+    response = await fetch(request, { cache: "no-store" });
+    if (response.ok) await cache.put(request, response.clone());
+  } catch {
+    response = await cache.match(request);
+  }
+  if (!response) return new Response("import('./cloud-sync.js');", { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  const source = await response.text();
+  const cloudLoader = "\n;import('./cloud-sync.js').catch(error=>console.error('SU Mega Cloud:',error));\n";
+  return new Response(source.includes("cloud-sync.js") ? source : source + cloudLoader, {
+    status: 200,
+    headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" }
+  });
+}
+
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
+
+  if (url.origin === self.location.origin && url.pathname.endsWith("/official-results.js")) {
+    event.respondWith(officialResultsWithCloud(event.request));
+    return;
+  }
 
   if (url.pathname.endsWith("/data/ultimo-concurso.json") || url.pathname.endsWith("/data/concursos-oficiais.json")) {
     event.respondWith(
