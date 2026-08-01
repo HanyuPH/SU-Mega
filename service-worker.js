@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-cloud-v5";
+const CACHE_NAME = "su-mega-c2-cloud-v6";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -11,7 +11,7 @@ const APP_ASSETS = [
   "./official-results.js",
   "./cloud-sync-v2.js",
   "./account-panel.js",
-  "./ecosystem-ui.js",
+  "./ecosystem-ui.js?v=6",
   "./data/games-01.js",
   "./data/games-02.js",
   "./data/games-03.js",
@@ -51,13 +51,12 @@ async function officialResultsWithCloud(request) {
   } catch {
     response = await cache.match(request);
   }
-  const fallback = "import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).then(()=>import('./ecosystem-ui.js'));";
-  if (!response) return new Response(fallback, { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  const loader = "\n;import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).then(()=>import('./ecosystem-ui.js?v=6')).catch(error=>console.error('SU Mega Cloud:',error));\n";
+  if (!response) return new Response(loader, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" } });
   const source = await response.text();
-  const cloudLoader = "\n;import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).then(()=>import('./ecosystem-ui.js')).catch(error=>console.error('SU Mega Cloud:',error));\n";
-  return new Response(source.includes("ecosystem-ui.js") ? source : source + cloudLoader, {
+  return new Response(source + loader, {
     status: 200,
-    headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" }
+    headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate" }
   });
 }
 
@@ -67,6 +66,11 @@ self.addEventListener("fetch", event => {
 
   if (url.origin === self.location.origin && url.pathname.endsWith("/official-results.js")) {
     event.respondWith(officialResultsWithCloud(event.request));
+    return;
+  }
+
+  if (url.pathname.endsWith("/ecosystem-ui.js")) {
+    event.respondWith(fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request)));
     return;
   }
 
@@ -87,7 +91,7 @@ self.addEventListener("fetch", event => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
