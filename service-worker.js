@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-cloud-v4";
+const CACHE_NAME = "su-mega-c2-cloud-v5";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const APP_ASSETS = [
   "./official-results.js",
   "./cloud-sync-v2.js",
   "./account-panel.js",
+  "./ecosystem-ui.js",
   "./data/games-01.js",
   "./data/games-02.js",
   "./data/games-03.js",
@@ -50,11 +51,11 @@ async function officialResultsWithCloud(request) {
   } catch {
     response = await cache.match(request);
   }
-  const fallback = "import('./cloud-sync-v2.js');import('./account-panel.js');";
+  const fallback = "import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).then(()=>import('./ecosystem-ui.js'));";
   if (!response) return new Response(fallback, { headers: { "Content-Type": "application/javascript; charset=utf-8" } });
   const source = await response.text();
-  const cloudLoader = "\n;import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).catch(error=>console.error('SU Mega Cloud:',error));\n";
-  return new Response(source.includes("account-panel.js") ? source : source + cloudLoader, {
+  const cloudLoader = "\n;import('./cloud-sync-v2.js').then(()=>import('./account-panel.js')).then(()=>import('./ecosystem-ui.js')).catch(error=>console.error('SU Mega Cloud:',error));\n";
+  return new Response(source.includes("ecosystem-ui.js") ? source : source + cloudLoader, {
     status: 200,
     headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "no-store" }
   });
