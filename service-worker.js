@@ -15,9 +15,7 @@ const APP_ASSETS = [
   "./prize-analysis.js",
   "./contest-bets.js",
   "./contest-bets-cloud.js",
-  "./contest-lifecycle.js",
-  "./contest-lifecycle-layout.js",
-  "./contest-lifecycle-cloud.js",
+  "./contest-lock.js",
   "./beta-banner.js",
   "./beta-layout-review.js",
   "./data/games-01.js",
@@ -67,10 +65,8 @@ async function officialResultsWithCloud(request) {
     + ".then(()=>import('./ecosystem-ui.js?v=7'))"
     + ".then(()=>import('./prize-analysis.js?v=2'))"
     + ".then(()=>import('./contest-bets.js?v=3'))"
-    + ".then(()=>import('./contest-lifecycle.js?v=1'))"
-    + ".then(()=>import('./contest-lifecycle-layout.js?v=1'))"
     + ".then(()=>import('./contest-bets-cloud.js?v=3'))"
-    + ".then(()=>import('./contest-lifecycle-cloud.js?v=1'))"
+    + ".then(()=>import('./contest-lock.js?v=1'))"
     + ".catch(error=>console.error('SU Mega Beta:',error));\n";
 
   if (!response) {
@@ -105,9 +101,7 @@ self.addEventListener("fetch", event => {
     url.pathname.endsWith("/prize-analysis.js") ||
     url.pathname.endsWith("/contest-bets.js") ||
     url.pathname.endsWith("/contest-bets-cloud.js") ||
-    url.pathname.endsWith("/contest-lifecycle.js") ||
-    url.pathname.endsWith("/contest-lifecycle-layout.js") ||
-    url.pathname.endsWith("/contest-lifecycle-cloud.js") ||
+    url.pathname.endsWith("/contest-lock.js") ||
     url.pathname.endsWith("/beta-banner.js") ||
     url.pathname.endsWith("/beta-layout-review.js") ||
     url.pathname.endsWith("/cloud-sync-v2.js")
