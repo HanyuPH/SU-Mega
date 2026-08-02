@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v18";
+const CACHE_NAME = "su-mega-c2-beta-v19";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -16,6 +16,7 @@ const APP_ASSETS = [
   "./contest-bets.js",
   "./contest-bets-cloud.js",
   "./contest-lock.js",
+  "./contest-session.js",
   "./beta-banner.js",
   "./beta-layout-review.js",
   "./data/games-01.js",
@@ -58,7 +59,7 @@ async function officialResultsWithCloud(request) {
     response = await cache.match(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=18')"
+  const loader = "\n;import('./beta-banner.js?v=19')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./cloud-sync-v2.js?v=3'))"
     + ".then(()=>import('./account-panel.js'))"
@@ -67,6 +68,7 @@ async function officialResultsWithCloud(request) {
     + ".then(()=>import('./contest-bets.js?v=3'))"
     + ".then(()=>import('./contest-bets-cloud.js?v=3'))"
     + ".then(()=>import('./contest-lock.js?v=1'))"
+    + ".then(()=>import('./contest-session.js?v=1'))"
     + ".catch(error=>console.error('SU Mega Beta:',error));\n";
 
   if (!response) {
@@ -102,6 +104,7 @@ self.addEventListener("fetch", event => {
     url.pathname.endsWith("/contest-bets.js") ||
     url.pathname.endsWith("/contest-bets-cloud.js") ||
     url.pathname.endsWith("/contest-lock.js") ||
+    url.pathname.endsWith("/contest-session.js") ||
     url.pathname.endsWith("/beta-banner.js") ||
     url.pathname.endsWith("/beta-layout-review.js") ||
     url.pathname.endsWith("/cloud-sync-v2.js")
