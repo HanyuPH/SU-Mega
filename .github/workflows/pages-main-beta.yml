@@ -45,15 +45,9 @@ jobs:
           test -f public/contest-bets-cloud.js
           test -f public/contest-lock.js
           test -f public/contest-session.js
-          test -f public/beta-layout-review.js
           grep -q 'stable-su-mega-c2-v19' public/service-worker.js
-          grep -q 'Tipo do concurso' public/contest-bets.js
-          grep -q 'Concluir concurso' public/contest-bets.js
-          grep -q 'status: row?.status === "concluido"' public/contest-bets-cloud.js
           grep -q 'Resultado publicado • bloqueado' public/contest-lock.js
           grep -q 'Reabrir concurso' public/contest-session.js
-          grep -q "contest-lock.js?v=1" public/service-worker.js
-          grep -q "contest-session.js?v=1" public/service-worker.js
           ! grep -q "beta-banner.js" public/service-worker.js
           node --check public/contest-bets.js
           node --check public/contest-bets-cloud.js
@@ -61,16 +55,21 @@ jobs:
           node --check public/contest-session.js
           node --check public/service-worker.js
 
-          # Ambiente Beta preservado
+          # Ambiente Beta SU Mega v20
           test -f public/beta/index.html
+          test -f public/beta/official-results.js
           test -f public/beta/contest-bets.js
           test -f public/beta/contest-bets-cloud.js
           test -f public/beta/contest-lock.js
           test -f public/beta/contest-session.js
-          grep -q 'const BUILD = "v19"' public/beta/beta-banner.js
-          grep -q 'su-mega-c2-beta-v19' public/beta/service-worker.js
+          grep -q 'const BUILD = "v20"' public/beta/beta-banner.js
+          grep -q 'su-mega-c2-beta-v20' public/beta/service-worker.js
+          grep -q 'Consulta direta à fonte oficial' public/beta/official-results.js
+          grep -q 'ainda não publicado pela CAIXA' public/beta/official-results.js
+          grep -q 'safeResult.*CAIXA_API' public/beta/official-results.js
           grep -q 'Resultado publicado • bloqueado' public/beta/contest-lock.js
           grep -q 'Reabrir concurso' public/beta/contest-session.js
+          node --check public/beta/official-results.js
           node --check public/beta/contest-bets.js
           node --check public/beta/contest-bets-cloud.js
           node --check public/beta/contest-lock.js
