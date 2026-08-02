@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v16";
+const CACHE_NAME = "su-mega-c2-beta-v17";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -57,14 +57,14 @@ async function officialResultsWithCloud(request) {
     response = await cache.match(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=16')"
+  const loader = "\n;import('./beta-banner.js?v=17')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./cloud-sync-v2.js?v=3'))"
     + ".then(()=>import('./account-panel.js'))"
     + ".then(()=>import('./ecosystem-ui.js?v=7'))"
     + ".then(()=>import('./prize-analysis.js?v=2'))"
-    + ".then(()=>import('./contest-bets.js?v=2'))"
-    + ".then(()=>import('./contest-bets-cloud.js?v=2'))"
+    + ".then(()=>import('./contest-bets.js?v=3'))"
+    + ".then(()=>import('./contest-bets-cloud.js?v=3'))"
     + ".catch(error=>console.error('SU Mega Beta:',error));\n";
 
   if (!response) {
