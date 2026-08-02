@@ -12,10 +12,13 @@
     .hero h1,.subtitle,.game-meta,.system-title{overflow-wrap:anywhere}
 
     .toolbar-top{display:grid!important;grid-template-columns:minmax(220px,.9fr) minmax(420px,1.1fr)!important;align-items:start!important;gap:16px!important}
-    .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:var(--su-action-height)!important;align-items:stretch!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
-    .actions input[hidden]{display:none!important}
-    .actions>.button{box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;max-height:var(--su-action-height)!important;align-self:stretch!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important;transform:none!important}
-    .actions .danger{grid-column:1/-1!important}
+    #wallet-view .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:var(--su-action-height) var(--su-action-height) var(--su-action-height)!important;align-items:stretch!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
+    #wallet-view .actions input[hidden]{display:none!important;position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important}
+    #wallet-view .actions>.button{appearance:none!important;-webkit-appearance:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;max-height:var(--su-action-height)!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important;transform:none!important;position:static!important;inset:auto!important}
+    #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
+    #wallet-view .actions #import-backup-button{grid-column:2;grid-row:1}
+    #wallet-view .actions #print-games{grid-column:1;grid-row:2}
+    #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:3}
 
     .filters{align-items:end!important}
     .filters label{min-width:0!important}
@@ -47,7 +50,6 @@
 
     @media(max-width:900px){
       .toolbar-top{grid-template-columns:1fr!important}
-      .actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
       .filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}
       .numbers-search{grid-column:1/-1!important}
     }
@@ -62,8 +64,6 @@
       .hero-inner{gap:10px!important}
       .brand{gap:10px!important}
       .toolbar{padding:14px!important}
-      .actions{grid-template-columns:1fr 1fr!important}
-      .actions .danger{grid-column:1/-1!important}
       .filters{grid-template-columns:1fr 1fr!important}
       .filter-footer{align-items:stretch!important;flex-direction:column!important}
       .filter-footer .button{width:100%!important}
@@ -76,66 +76,74 @@
       .su-mega-eco-body{padding:18px!important}
     }
     @media(max-width:380px){
-      .actions,.filters{grid-template-columns:1fr!important}
-      .actions .danger,.numbers-search{grid-column:auto!important}
+      #wallet-view .actions{grid-template-columns:1fr!important;grid-template-rows:repeat(4,var(--su-action-height))!important}
+      #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
+      #wallet-view .actions #import-backup-button{grid-column:1;grid-row:2}
+      #wallet-view .actions #print-games{grid-column:1;grid-row:3}
+      #wallet-view .actions #reset-status{grid-column:1;grid-row:4}
+      .filters{grid-template-columns:1fr!important}
+      .numbers-search{grid-column:auto!important}
       .summary{grid-template-columns:1fr 1fr!important}
       .status-actions{grid-template-columns:1fr!important}
     }
   `;
   document.head.appendChild(style);
 
-  function replaceImportLabelWithButton() {
+  let repairing = false;
+
+  function buildStableActionPanel() {
+    if (repairing) return;
     const actions = document.querySelector("#wallet-view .actions");
     const input = document.getElementById("import-file");
     if (!actions || !input) return;
 
-    let button = document.getElementById("import-backup-button");
-    const label = actions.querySelector('label[for="import-file"]');
+    repairing = true;
+    try {
+      let importButton = document.getElementById("import-backup-button");
+      const legacyLabel = actions.querySelector('label[for="import-file"]');
 
-    if (!button && label) {
-      button = document.createElement("button");
-      button.id = "import-backup-button";
-      button.type = "button";
-      button.className = label.className;
-      button.textContent = label.textContent.trim() || "Importar backup";
-      label.replaceWith(button);
-    }
+      if (!importButton) {
+        importButton = document.createElement("button");
+        importButton.id = "import-backup-button";
+        importButton.type = "button";
+        importButton.className = "button";
+        importButton.textContent = "Importar backup";
+      }
 
-    if (button && !button.dataset.importBound) {
-      button.dataset.importBound = "true";
-      button.addEventListener("click", () => input.click());
+      if (legacyLabel) legacyLabel.remove();
+      if (!importButton.isConnected) actions.insertBefore(importButton, input);
+
+      if (!importButton.dataset.importBound) {
+        importButton.dataset.importBound = "true";
+        importButton.addEventListener("click", () => input.click());
+      }
+
+      ["export-backup","import-backup-button","print-games","reset-status"].forEach(id => {
+        const control = document.getElementById(id);
+        if (!control) return;
+        control.style.cssText = "";
+        control.classList.add("button");
+      });
+
+      if (input.parentElement !== actions) actions.appendChild(input);
+      actions.dataset.stableActionPanel = "true";
+    } finally {
+      repairing = false;
     }
   }
 
-  function normalizeActions() {
-    replaceImportLabelWithButton();
-    const actions = document.querySelector("#wallet-view .actions");
-    if (!actions) return;
-    actions.querySelectorAll(":scope > .button").forEach(control => {
-      control.style.setProperty("height", "54px", "important");
-      control.style.setProperty("min-height", "54px", "important");
-      control.style.setProperty("max-height", "54px", "important");
-      control.style.setProperty("display", "flex", "important");
-      control.style.setProperty("align-items", "center", "important");
-      control.style.setProperty("justify-content", "center", "important");
-      control.style.setProperty("margin", "0", "important");
-      control.style.setProperty("padding", "10px 12px", "important");
-      control.style.setProperty("box-sizing", "border-box", "important");
-    });
+  const actionsHost = document.querySelector("#wallet-view .actions");
+  if (actionsHost) {
+    buildStableActionPanel();
+    new MutationObserver(() => buildStableActionPanel()).observe(actionsHost, { childList: true, subtree: false });
   }
-
-  const scheduleNormalize = () => {
-    requestAnimationFrame(() => requestAnimationFrame(normalizeActions));
-    setTimeout(normalizeActions, 100);
-  };
 
   document.querySelectorAll(".view-tab").forEach(tab => {
-    tab.addEventListener("click", scheduleNormalize, { passive: true });
+    tab.addEventListener("click", () => requestAnimationFrame(buildStableActionPanel), { passive: true });
   });
-  window.addEventListener("pageshow", scheduleNormalize, { passive: true });
-  window.addEventListener("orientationchange", scheduleNormalize, { passive: true });
+  window.addEventListener("pageshow", buildStableActionPanel, { passive: true });
+  window.addEventListener("orientationchange", () => requestAnimationFrame(buildStableActionPanel), { passive: true });
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) scheduleNormalize();
+    if (!document.hidden) requestAnimationFrame(buildStableActionPanel);
   });
-  scheduleNormalize();
 })();
