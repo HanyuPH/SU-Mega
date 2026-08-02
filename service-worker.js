@@ -57,7 +57,7 @@ async function officialResultsWithCloud(request) {
   }
 
   const loader = "\n;import('./beta-banner.js?v=13')"
-    + ".then(()=>import('./beta-layout-review.js?v=9'))"
+    + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./cloud-sync-v2.js?v=3'))"
     + ".then(()=>import('./account-panel.js'))"
     + ".then(()=>import('./ecosystem-ui.js?v=7'))"
