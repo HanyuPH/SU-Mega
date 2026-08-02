@@ -69,6 +69,12 @@ Endereço oficial:
 
 `https://hanyuph.github.io/SU-Mega/`
 
+Ambiente Beta:
+
+`https://hanyuph.github.io/SU-Mega/beta/`
+
+A publicação do GitHub Pages reúne a branch `main` na raiz e a branch `beta` na pasta `/beta/`.
+
 ## Privacidade
 
 Jogos, marcações e concursos ficam no navegador do usuário. O aplicativo não envia apostas ou dados pessoais para servidores externos.
