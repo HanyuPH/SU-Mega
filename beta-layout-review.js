@@ -4,15 +4,16 @@
   const style = document.createElement("style");
   style.id = "su-beta-layout-review";
   style.textContent = `
-    :root{--su-control-height:46px;--su-gap:10px}
+    :root{--su-control-height:46px;--su-action-height:54px;--su-gap:10px}
     .page,.hero-inner{width:100%;max-width:1420px}
     .hero-inner,.toolbar-top,.filter-footer,.system-heading,.card-top{min-width:0}
     .brand>div,.toolbar-top>div,.card-top>div{min-width:0}
     .hero h1,.subtitle,.game-meta,.system-title{overflow-wrap:anywhere}
 
     .toolbar-top{display:grid!important;grid-template-columns:minmax(220px,.9fr) minmax(420px,1.1fr)!important;align-items:start!important;gap:16px!important}
-    .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
-    .actions .button,.actions label.button{width:100%!important;min-width:0!important;min-height:var(--su-control-height)!important;height:100%!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important}
+    .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:var(--su-action-height)!important;align-items:stretch!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
+    .actions input[hidden]{display:none!important}
+    .actions>.button,.actions>label.button{box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;align-self:stretch!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important}
     .actions .danger{grid-column:1/-1!important}
 
     .filters{align-items:end!important}
