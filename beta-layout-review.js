@@ -11,29 +11,25 @@
     .brand>div,.toolbar-top>div,.card-top>div{min-width:0}
     .hero h1,.subtitle,.game-meta,.system-title{overflow-wrap:anywhere}
 
-    .toolbar-top{display:grid!important;grid-template-columns:minmax(220px,.9fr) minmax(420px,1.1fr)!important;align-items:start!important;gap:16px!important}
-
-    /* O painel original permanece apenas como ponte funcional e não participa do layout. */
-    #wallet-view .actions{display:none!important}
-
-    #su-stable-action-panel{
+    /* Mesmo padrão estrutural do SU Loto: um único painel, sem clonagem. */
+    .toolbar-top{display:block!important}
+    #wallet-view .actions{
       display:grid!important;
       grid-template-columns:repeat(2,minmax(0,1fr))!important;
-      grid-template-rows:var(--su-action-height) var(--su-action-height) var(--su-action-height)!important;
       gap:var(--su-gap)!important;
       width:100%!important;
-      min-width:0!important;
-      margin:0!important;
-      align-self:start!important;
+      margin-top:11px!important;
+      align-items:stretch!important;
     }
-    #su-stable-action-panel .button{
+    #wallet-view .actions input[hidden]{display:none!important}
+    #wallet-view .actions>.button{
       appearance:none!important;
       -webkit-appearance:none!important;
       box-sizing:border-box!important;
       width:100%!important;
       min-width:0!important;
-      min-height:var(--su-action-height)!important;
       height:var(--su-action-height)!important;
+      min-height:var(--su-action-height)!important;
       max-height:var(--su-action-height)!important;
       margin:0!important;
       padding:10px 12px!important;
@@ -46,10 +42,10 @@
       position:static!important;
       transform:none!important;
     }
-    #su-action-export{grid-column:1;grid-row:1}
-    #su-action-import{grid-column:2;grid-row:1}
-    #su-action-print{grid-column:1;grid-row:2}
-    #su-action-reset{grid-column:1/-1;grid-row:3}
+    #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
+    #wallet-view .actions #import-backup{grid-column:2;grid-row:1}
+    #wallet-view .actions #print-games{grid-column:1;grid-row:2}
+    #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:3}
 
     .filters{align-items:end!important}
     .filters label{min-width:0!important}
@@ -79,7 +75,6 @@
     .su-account-label input{width:100%!important;box-sizing:border-box!important}
 
     @media(max-width:900px){
-      .toolbar-top{grid-template-columns:1fr!important}
       .filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}
       .numbers-search{grid-column:1/-1!important}
     }
@@ -106,11 +101,11 @@
       .su-mega-eco-body{padding:18px!important}
     }
     @media(max-width:380px){
-      #su-stable-action-panel{grid-template-columns:1fr!important;grid-template-rows:repeat(4,var(--su-action-height))!important}
-      #su-action-export{grid-column:1;grid-row:1}
-      #su-action-import{grid-column:1;grid-row:2}
-      #su-action-print{grid-column:1;grid-row:3}
-      #su-action-reset{grid-column:1;grid-row:4}
+      #wallet-view .actions{grid-template-columns:1fr!important}
+      #wallet-view .actions #export-backup,
+      #wallet-view .actions #import-backup,
+      #wallet-view .actions #print-games,
+      #wallet-view .actions #reset-status{grid-column:1!important;grid-row:auto!important}
       .filters{grid-template-columns:1fr!important}
       .numbers-search{grid-column:auto!important}
       .summary{grid-template-columns:1fr 1fr!important}
@@ -119,39 +114,9 @@
   `;
   document.head.appendChild(style);
 
-  function triggerOriginal(id) {
-    const control = document.getElementById(id);
-    if (control) control.click();
-  }
-
-  function createPanel() {
-    const original = document.querySelector("#wallet-view .actions");
-    if (!original || document.getElementById("su-stable-action-panel")) return;
-
-    const panel = document.createElement("div");
-    panel.id = "su-stable-action-panel";
-    panel.setAttribute("aria-label", "Ações da carteira");
-    panel.innerHTML = `
-      <button id="su-action-export" class="button primary" type="button">Exportar backup</button>
-      <button id="su-action-import" class="button" type="button">Importar backup</button>
-      <button id="su-action-print" class="button" type="button">Imprimir visíveis</button>
-      <button id="su-action-reset" class="button danger" type="button">Restaurar padrão</button>
-    `;
-
-    original.insertAdjacentElement("afterend", panel);
-
-    panel.querySelector("#su-action-export").addEventListener("click", () => triggerOriginal("export-backup"));
-    panel.querySelector("#su-action-import").addEventListener("click", () => {
-      const input = document.getElementById("import-file");
-      if (input) input.click();
-    });
-    panel.querySelector("#su-action-print").addEventListener("click", () => triggerOriginal("print-games"));
-    panel.querySelector("#su-action-reset").addEventListener("click", () => triggerOriginal("reset-status"));
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", createPanel, { once:true });
-  } else {
-    createPanel();
+  const importButton = document.getElementById("import-backup");
+  const importInput = document.getElementById("import-file");
+  if (importButton && importInput) {
+    importButton.addEventListener("click", () => importInput.click());
   }
 })();
