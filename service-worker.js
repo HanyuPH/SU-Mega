@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v19";
+const CACHE_NAME = "su-mega-c2-beta-v20";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -59,7 +59,7 @@ async function officialResultsWithCloud(request) {
     response = await cache.match(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=19')"
+  const loader = "\n;import('./beta-banner.js?v=20')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./cloud-sync-v2.js?v=3'))"
     + ".then(()=>import('./account-panel.js'))"
