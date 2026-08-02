@@ -40,6 +40,13 @@ jobs:
           touch public/beta/.nojekyll
           test -f public/index.html
           test -f public/beta/index.html
+          test -f public/beta/contest-bets.js
+          test -f public/beta/contest-bets-cloud.js
+          grep -q 'const BUILD = "v17"' public/beta/beta-banner.js
+          grep -q 'su-mega-c2-beta-v17' public/beta/service-worker.js
+          grep -q 'Tipo do concurso' public/beta/contest-bets.js
+          grep -q 'Concluir concurso' public/beta/contest-bets.js
+          grep -q 'status: row?.status === "concluido"' public/beta/contest-bets-cloud.js
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
