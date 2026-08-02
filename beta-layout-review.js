@@ -13,7 +13,7 @@
     .toolbar-top{display:grid!important;grid-template-columns:minmax(220px,.9fr) minmax(420px,1.1fr)!important;align-items:start!important;gap:16px!important}
     .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:var(--su-action-height)!important;align-items:stretch!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
     .actions input[hidden]{display:none!important}
-    .actions>.button,.actions>label.button{box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;align-self:stretch!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important}
+    .actions>.button,.actions>label.button{box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;max-height:var(--su-action-height)!important;align-self:stretch!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important;transform:none!important}
     .actions .danger{grid-column:1/-1!important}
 
     .filters{align-items:end!important}
@@ -82,4 +82,49 @@
     }
   `;
   document.head.appendChild(style);
+
+  const normalizeActions = () => {
+    const actions = document.querySelector("#wallet-view .actions");
+    if (!actions) return;
+    const controls = actions.querySelectorAll(":scope > .button, :scope > label.button");
+    controls.forEach(control => {
+      control.style.setProperty("height", "54px", "important");
+      control.style.setProperty("min-height", "54px", "important");
+      control.style.setProperty("max-height", "54px", "important");
+      control.style.setProperty("display", "flex", "important");
+      control.style.setProperty("align-items", "center", "important");
+      control.style.setProperty("justify-content", "center", "important");
+      control.style.setProperty("margin", "0", "important");
+      control.style.setProperty("padding", "10px 12px", "important");
+      control.style.setProperty("box-sizing", "border-box", "important");
+    });
+    const importLabel = actions.querySelector('label[for="import-file"]');
+    if (importLabel) {
+      importLabel.style.setProperty("position", "relative", "important");
+      importLabel.style.setProperty("top", "0", "important");
+      importLabel.style.setProperty("transform", "translate3d(0,0,0)", "important");
+    }
+    void actions.offsetHeight;
+  };
+
+  const scheduleNormalize = () => {
+    requestAnimationFrame(() => requestAnimationFrame(normalizeActions));
+    setTimeout(normalizeActions, 80);
+    setTimeout(normalizeActions, 220);
+  };
+
+  document.querySelectorAll(".view-tab").forEach(tab => {
+    tab.addEventListener("click", scheduleNormalize, { passive: true });
+  });
+
+  const wallet = document.getElementById("wallet-view");
+  if (wallet) {
+    new MutationObserver(() => {
+      if (!wallet.hidden) scheduleNormalize();
+    }).observe(wallet, { attributes: true, attributeFilter: ["hidden", "class", "style"] });
+  }
+
+  window.addEventListener("pageshow", scheduleNormalize, { passive: true });
+  window.addEventListener("orientationchange", scheduleNormalize, { passive: true });
+  scheduleNormalize();
 })();
