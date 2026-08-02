@@ -44,8 +44,8 @@
     }
     #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
     #wallet-view .actions #import-backup{grid-column:2;grid-row:1}
-    #wallet-view .actions #print-games{grid-column:1;grid-row:2}
-    #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:3}
+    #wallet-view .actions #print-games{display:none!important}
+    #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:2}
 
     .filters{align-items:end!important}
     .filters label{min-width:0!important}
@@ -104,7 +104,6 @@
       #wallet-view .actions{grid-template-columns:1fr!important}
       #wallet-view .actions #export-backup,
       #wallet-view .actions #import-backup,
-      #wallet-view .actions #print-games,
       #wallet-view .actions #reset-status{grid-column:1!important;grid-row:auto!important}
       .filters{grid-template-columns:1fr!important}
       .numbers-search{grid-column:auto!important}
