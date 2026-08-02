@@ -12,11 +12,13 @@
     .hero h1,.subtitle,.game-meta,.system-title{overflow-wrap:anywhere}
 
     .toolbar-top{display:grid!important;grid-template-columns:minmax(220px,.9fr) minmax(420px,1.1fr)!important;align-items:start!important;gap:16px!important}
-    #wallet-view .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:var(--su-action-height) var(--su-action-height) var(--su-action-height)!important;align-items:stretch!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
-    #wallet-view .actions input[hidden]{display:none!important;position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important}
-    #wallet-view .actions>.button{appearance:none!important;-webkit-appearance:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;max-height:var(--su-action-height)!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important;transform:none!important;position:static!important;inset:auto!important}
+    #wallet-view .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:var(--su-action-height) var(--su-action-height) var(--su-action-height)!important;align-items:start!important;gap:var(--su-gap)!important;width:100%!important;margin:0!important}
+    #wallet-view .actions input[hidden]{display:none!important}
+    #wallet-view .actions>.button,
+    #wallet-view .actions>label.button{appearance:none!important;-webkit-appearance:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:var(--su-action-height)!important;height:var(--su-action-height)!important;max-height:var(--su-action-height)!important;margin:0!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1.2!important;white-space:normal!important;transform:none!important;position:static!important;inset:auto!important;align-self:start!important}
     #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
-    #wallet-view .actions #import-backup-button{grid-column:2;grid-row:1}
+    #wallet-view .actions #import-backup-button,
+    #wallet-view .actions>label[for="import-file"]{grid-column:2;grid-row:1}
     #wallet-view .actions #print-games{grid-column:1;grid-row:2}
     #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:3}
 
@@ -78,7 +80,8 @@
     @media(max-width:380px){
       #wallet-view .actions{grid-template-columns:1fr!important;grid-template-rows:repeat(4,var(--su-action-height))!important}
       #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
-      #wallet-view .actions #import-backup-button{grid-column:1;grid-row:2}
+      #wallet-view .actions #import-backup-button,
+      #wallet-view .actions>label[for="import-file"]{grid-column:1;grid-row:2}
       #wallet-view .actions #print-games{grid-column:1;grid-row:3}
       #wallet-view .actions #reset-status{grid-column:1;grid-row:4}
       .filters{grid-template-columns:1fr!important}
@@ -90,8 +93,34 @@
   document.head.appendChild(style);
 
   let repairing = false;
+  let queued = false;
+  let resizeObserver = null;
 
-  function buildStableActionPanel() {
+  function forceControlGeometry(control, column, row) {
+    if (!control) return;
+    const props = {
+      display: "flex",
+      height: "54px",
+      "min-height": "54px",
+      "max-height": "54px",
+      width: "100%",
+      margin: "0",
+      padding: "10px 12px",
+      "box-sizing": "border-box",
+      "align-items": "center",
+      "justify-content": "center",
+      "align-self": "start",
+      position: "static",
+      top: "auto",
+      bottom: "auto",
+      transform: "none",
+      "grid-column": column,
+      "grid-row": row
+    };
+    Object.entries(props).forEach(([name,value]) => control.style.setProperty(name,value,"important"));
+  }
+
+  function stabilizeActionPanel() {
     if (repairing) return;
     const actions = document.querySelector("#wallet-view .actions");
     const input = document.getElementById("import-file");
@@ -110,40 +139,72 @@
         importButton.textContent = "Importar backup";
       }
 
-      if (legacyLabel) legacyLabel.remove();
+      if (legacyLabel && legacyLabel !== importButton) legacyLabel.remove();
       if (!importButton.isConnected) actions.insertBefore(importButton, input);
-
       if (!importButton.dataset.importBound) {
         importButton.dataset.importBound = "true";
         importButton.addEventListener("click", () => input.click());
       }
 
-      ["export-backup","import-backup-button","print-games","reset-status"].forEach(id => {
-        const control = document.getElementById(id);
-        if (!control) return;
-        control.style.cssText = "";
-        control.classList.add("button");
-      });
+      const exportButton = document.getElementById("export-backup");
+      const printButton = document.getElementById("print-games");
+      const resetButton = document.getElementById("reset-status");
 
-      if (input.parentElement !== actions) actions.appendChild(input);
+      forceControlGeometry(exportButton,"1","1");
+      forceControlGeometry(importButton,"2","1");
+      forceControlGeometry(printButton,"1","2");
+      forceControlGeometry(resetButton,"1 / -1","3");
+
+      actions.style.setProperty("grid-template-rows","54px 54px 54px","important");
+      actions.style.setProperty("align-items","start","important");
       actions.dataset.stableActionPanel = "true";
     } finally {
       repairing = false;
     }
   }
 
-  const actionsHost = document.querySelector("#wallet-view .actions");
-  if (actionsHost) {
-    buildStableActionPanel();
-    new MutationObserver(() => buildStableActionPanel()).observe(actionsHost, { childList: true, subtree: false });
+  function queueStabilize() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      stabilizeActionPanel();
+    });
   }
 
-  document.querySelectorAll(".view-tab").forEach(tab => {
-    tab.addEventListener("click", () => requestAnimationFrame(buildStableActionPanel), { passive: true });
-  });
-  window.addEventListener("pageshow", buildStableActionPanel, { passive: true });
-  window.addEventListener("orientationchange", () => requestAnimationFrame(buildStableActionPanel), { passive: true });
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) requestAnimationFrame(buildStableActionPanel);
-  });
+  function installObservers() {
+    const actions = document.querySelector("#wallet-view .actions");
+    if (!actions) return;
+    stabilizeActionPanel();
+
+    new MutationObserver(queueStabilize).observe(actions, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class","style"]
+    });
+
+    if ("ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(entries => {
+        const exportButton = document.getElementById("export-backup");
+        const importButton = document.getElementById("import-backup-button");
+        if (!exportButton || !importButton) return;
+        const a = exportButton.getBoundingClientRect();
+        const b = importButton.getBoundingClientRect();
+        if (Math.abs(a.top-b.top) > 1 || Math.abs(a.height-b.height) > 1) queueStabilize();
+      });
+      resizeObserver.observe(actions);
+      ["export-backup","import-backup-button","print-games","reset-status"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) resizeObserver.observe(el);
+      });
+    }
+  }
+
+  document.querySelectorAll(".view-tab").forEach(tab => tab.addEventListener("click", queueStabilize, {passive:true}));
+  window.addEventListener("pageshow", queueStabilize, {passive:true});
+  window.addEventListener("orientationchange", queueStabilize, {passive:true});
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) queueStabilize(); });
+
+  installObservers();
 })();
