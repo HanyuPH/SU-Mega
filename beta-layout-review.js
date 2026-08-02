@@ -44,7 +44,6 @@
     }
     #wallet-view .actions #export-backup{grid-column:1;grid-row:1}
     #wallet-view .actions #import-backup{grid-column:2;grid-row:1}
-    #wallet-view .actions #print-games{display:none!important}
     #wallet-view .actions #reset-status{grid-column:1/-1;grid-row:2}
 
     .filters{align-items:end!important}
@@ -112,6 +111,8 @@
     }
   `;
   document.head.appendChild(style);
+
+  document.getElementById("print-games")?.remove();
 
   const importButton = document.getElementById("import-backup");
   const importInput = document.getElementById("import-file");
