@@ -13,6 +13,11 @@ assert(manifest.start_url === "./" && manifest.scope === "./", "Escopo/start_url
 assert(Array.isArray(manifest.icons) && manifest.icons.length >= 1, "Ícone PWA ausente.");
 for (const icon of manifest.icons) assert(fs.existsSync(path.join(root, icon.src)), `Ícone ausente: ${icon.src}`);
 
+const serviceWorkerSource = fs.readFileSync(path.join(root, "service-worker.js"), "utf8");
+const cacheMatch = serviceWorkerSource.match(/const\s+CACHE_NAME\s*=\s*["']([^"']+)["']/);
+assert(cacheMatch, "Nome do cache atual não foi identificado.");
+const currentCacheName = cacheMatch[1];
+
 const listeners = {};
 let installedAssets = [];
 const deletedCaches = [];
@@ -27,7 +32,7 @@ const context = {
   },
   caches: {
     open: async () => cache,
-    keys: async () => ["su-mega-c1-old", "su-mega-c2-v1", "su-mega-c2-v2", "unrelated"],
+    keys: async () => ["su-mega-c1-old", "su-mega-c2-v1", currentCacheName, "unrelated"],
     delete: async key => { deletedCaches.push(key); return true; },
     match: async request => {
       if (request === "./index.html") return cachedResponse;
@@ -41,7 +46,7 @@ const context = {
   console
 };
 vm.createContext(context);
-vm.runInContext(fs.readFileSync(path.join(root, "service-worker.js"), "utf8"), context);
+vm.runInContext(serviceWorkerSource, context);
 assert(listeners.install && listeners.activate && listeners.fetch, "Eventos obrigatórios do service worker ausentes.");
 
 let pending;
@@ -49,7 +54,7 @@ listeners.install({ waitUntil: promise => { pending = promise; } });
 await pending;
 assert(installedAssets.length >= 22, "Lista de cache inicial incompleta.");
 for (const asset of installedAssets) {
-  const clean = asset === "./" ? "index.html" : asset.replace(/^\.\//, "");
+  const clean = asset === "./" ? "index.html" : asset.replace(/^\.\//, "").split("?")[0];
   assert(fs.existsSync(path.join(root, clean)), `Ativo cacheado ausente: ${asset}`);
 }
 for (const required of [
@@ -61,7 +66,7 @@ listeners.activate({ waitUntil: promise => { pending = promise; } });
 await pending;
 assert(deletedCaches.includes("su-mega-c1-old"), "Cache C1 antigo não foi removido.");
 assert(deletedCaches.includes("su-mega-c2-v1"), "Cache C2 v1 antigo não foi removido.");
-assert(!deletedCaches.includes("su-mega-c2-v2"), "Cache atual foi removido incorretamente.");
+assert(!deletedCaches.includes(currentCacheName), "Cache atual foi removido incorretamente.");
 assert(!deletedCaches.includes("unrelated"), "Cache de outro aplicativo não deve ser removido.");
 
 let responsePromise;
@@ -107,6 +112,7 @@ assert(css.includes("overflow-x:hidden"), "Proteção contra corte lateral ausen
 console.log(JSON.stringify({
   ok: true,
   manifest: "ok",
+  cacheName: currentCacheName,
   cachedAssets: installedAssets.length,
   offlineNavigation: "ok",
   offlineOfficialResult: "ok",
