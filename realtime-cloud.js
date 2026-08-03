@@ -57,8 +57,15 @@ let statusObserver = null;
 let monitorTimer = null;
 let flushTimer = null;
 let refreshTimer = null;
+let localCaptureTimer = null;
+let flushPromise = null;
+let applyingRemoteMirror = false;
+let statusSnapshotReady = false;
+let deferredLocalStatuses = null;
+let cachedCardIds = new Set();
 let pendingWrites = new Map();
-let knownStatuses = new Map();
+let inFlightWrites = new Map();
+let remoteStatuses = new Map();
 let knownContestSignature = "";
 let remoteContestIds = new Set();
 let applyingRemoteContests = false;
@@ -87,9 +94,26 @@ function cardIds() {
   return [...document.querySelectorAll(".game-card[data-id]")].map(card => String(card.dataset.id));
 }
 
+function cardIdSet() {
+  const ids = cardIds();
+  if (cachedCardIds.size !== ids.length || ids.some(id => !cachedCardIds.has(id))) cachedCardIds = new Set(ids);
+  return cachedCardIds;
+}
+
 function completeStatusMap(partial) {
   const result = {};
   for (const id of cardIds()) result[id] = VALID.has(partial[id]) ? partial[id] : "pendente";
+  return result;
+}
+
+function mapFromStatusObject(statuses) {
+  return new Map(Object.entries(completeStatusMap(statuses)));
+}
+
+function effectiveStatuses(base = Object.fromEntries(remoteStatuses)) {
+  const result = completeStatusMap(base);
+  for (const [id, status] of inFlightWrites) result[id] = status;
+  for (const [id, status] of pendingWrites) result[id] = status;
   return result;
 }
 
@@ -130,12 +154,17 @@ function saveStatusMirror(statuses) {
   const payload = {
     app: APP_NAME,
     wallet: WALLET,
-    schema: 3,
+    schema: 4,
     source: "firestore",
     savedAt: new Date().toISOString(),
     statuses
   };
-  localStorage.setItem(STATUS_KEY, JSON.stringify(payload));
+  applyingRemoteMirror = true;
+  try {
+    localStorage.setItem(STATUS_KEY, JSON.stringify(payload));
+  } finally {
+    applyingRemoteMirror = false;
+  }
   renderStatuses(statuses);
   window.dispatchEvent(new CustomEvent("su:cloud-statuses-applied", { detail: statuses }));
 }
@@ -238,6 +267,11 @@ async function migrateStatuses(user) {
   const local = completeStatusMap(currentStatuses());
   const remoteIds = new Set();
   snapshot.forEach(item => remoteIds.add(String(item.id)));
+  const partialRemote = {};
+  snapshot.forEach(item => {
+    const status = item.data()?.status;
+    if (VALID.has(status)) partialRemote[String(item.id)] = status;
+  });
   if (!localStorage.getItem(MIGRATION_KEY)) {
     const missing = Object.entries(local).filter(([id, status]) => status !== "pendente" && !remoteIds.has(id));
     for (let index = 0; index < missing.length; index += 400) {
@@ -253,23 +287,66 @@ async function migrateStatuses(user) {
       }
       await batch.commit();
     }
+    for (const [id, status] of missing) partialRemote[id] = status;
     localStorage.setItem(MIGRATION_KEY, new Date().toISOString());
   }
+  return completeStatusMap(partialRemote);
+}
+
+function queueStatus(id, status, allowed = cardIdSet()) {
+  const key = String(id);
+  if (!VALID.has(status) || !allowed.has(key)) return;
+  const remote = remoteStatuses.get(key) || "pendente";
+  if (status === remote && !inFlightWrites.has(key)) pendingWrites.delete(key);
+  else pendingWrites.set(key, status);
+}
+
+function captureLocalStatuses() {
+  if (applyingRemoteMirror || !currentUser) return;
+  const local = completeStatusMap(currentStatuses());
+  if (!statusSnapshotReady) {
+    deferredLocalStatuses = local;
+    return;
+  }
+  const allowed = cardIdSet();
+  for (const [id, status] of Object.entries(local)) queueStatus(id, status, allowed);
+  if (pendingWrites.size) scheduleFlush();
+}
+
+function scheduleLocalCapture() {
+  clearTimeout(localCaptureTimer);
+  localCaptureTimer = setTimeout(captureLocalStatuses, 0);
+}
+
+function installLocalWriteCapture() {
+  const previousSetItem = Storage.prototype.setItem;
+  Storage.prototype.setItem = function(key, value) {
+    const oldValue = this.getItem(key);
+    previousSetItem.call(this, key, value);
+    if (this === localStorage && key === STATUS_KEY && !applyingRemoteMirror && oldValue !== String(value)) {
+      scheduleLocalCapture();
+    }
+  };
+
+  document.addEventListener("click", event => {
+    if (event.target.closest?.(".game-card[data-id] .status-actions button[data-status]")) scheduleLocalCapture();
+  }, true);
+
+  window.addEventListener("storage", event => {
+    if (event.key === STATUS_KEY && !applyingRemoteMirror) scheduleLocalCapture();
+  });
+  window.addEventListener("su:local-statuses-changed", scheduleLocalCapture);
 }
 
 function startStatusObserver() {
   statusObserver?.disconnect();
-  knownStatuses = new Map(Object.entries(completeStatusMap(currentStatuses())));
   const host = document.getElementById("systems") || document.getElementById("games") || document.body;
   statusObserver = new MutationObserver(mutations => {
+    if (applyingRemoteMirror) return;
     for (const mutation of mutations) {
       const card = mutation.target.closest?.(".game-card[data-id]") || mutation.target;
       if (!(card instanceof HTMLElement) || !card.matches(".game-card[data-id]")) continue;
-      const id = String(card.dataset.id);
-      const status = card.dataset.status;
-      if (!VALID.has(status) || knownStatuses.get(id) === status) continue;
-      knownStatuses.set(id, status);
-      pendingWrites.set(id, status);
+      queueStatus(card.dataset.id, card.dataset.status);
     }
     if (pendingWrites.size) scheduleFlush();
   });
@@ -278,33 +355,56 @@ function startStatusObserver() {
 
 function scheduleFlush() {
   clearTimeout(flushTimer);
-  flushTimer = setTimeout(flushStatusWrites, 120);
-  setState("saving", `Salvando ${pendingWrites.size} alteração${pendingWrites.size === 1 ? "" : "ões"}…`);
+  flushTimer = setTimeout(() => { flushStatusWrites().catch(() => {}); }, 90);
+  const count = pendingWrites.size + inFlightWrites.size;
+  setState("saving", `Salvando ${count} alteração${count === 1 ? "" : "ões"}…`);
 }
 
 async function flushStatusWrites() {
-  if (!currentUser || !pendingWrites.size) return;
+  if (!currentUser || !pendingWrites.size) return flushPromise;
+  if (flushPromise) return flushPromise;
+
   const entries = [...pendingWrites.entries()];
-  pendingWrites.clear();
-  const reference = statusesCollection(currentUser.uid);
-  try {
-    for (let index = 0; index < entries.length; index += 400) {
-      const batch = writeBatch(db);
-      for (const [id, status] of entries.slice(index, index + 400)) {
-        batch.set(doc(reference, id), {
-          status,
-          wallet: WALLET,
-          updatedAt: serverTimestamp(),
-          updatedBy: clientId
-        }, { merge: true });
-      }
-      await batch.commit();
-    }
-  } catch (error) {
-    console.error("SU Mega Firestore status:", error);
-    for (const entry of entries) pendingWrites.set(...entry);
-    setState("error", "Falha ao salvar • tentativa automática pendente");
+  for (const [id, status] of entries) {
+    if (pendingWrites.get(id) === status) pendingWrites.delete(id);
+    inFlightWrites.set(id, status);
   }
+  const reference = statusesCollection(currentUser.uid);
+
+  flushPromise = (async () => {
+    try {
+      for (let index = 0; index < entries.length; index += 400) {
+        const batch = writeBatch(db);
+        for (const [id, status] of entries.slice(index, index + 400)) {
+          batch.set(doc(reference, id), {
+            status,
+            wallet: WALLET,
+            updatedAt: serverTimestamp(),
+            updatedBy: clientId
+          }, { merge: true });
+        }
+        await batch.commit();
+      }
+      for (const [id, status] of entries) {
+        remoteStatuses.set(id, status);
+        if (inFlightWrites.get(id) === status) inFlightWrites.delete(id);
+      }
+      saveStatusMirror(effectiveStatuses());
+      if (pendingWrites.size) scheduleFlush();
+      else if (navigator.onLine) setState("synced", "Sincronizado em tempo real");
+    } catch (error) {
+      console.error("SU Mega Firestore status:", error);
+      for (const [id, status] of entries) {
+        if (inFlightWrites.get(id) === status) inFlightWrites.delete(id);
+        if (!pendingWrites.has(id)) pendingWrites.set(id, status);
+      }
+      setState(navigator.onLine ? "error" : "offline", navigator.onLine ? "Falha ao salvar • nova tentativa pendente" : "Offline • alterações em espera");
+      if (navigator.onLine) setTimeout(scheduleFlush, 1500);
+    } finally {
+      flushPromise = null;
+    }
+  })();
+  return flushPromise;
 }
 
 function listenStatuses(user) {
@@ -318,9 +418,19 @@ function listenStatuses(user) {
         return;
       }
       const statuses = mapSnapshot(snapshot);
-      knownStatuses = new Map(Object.entries(statuses));
-      saveStatusMirror(statuses);
-      if (snapshot.metadata.hasPendingWrites) setState("saving", "Salvando na nuvem…");
+      remoteStatuses = mapFromStatusObject(statuses);
+      statusSnapshotReady = true;
+      if (deferredLocalStatuses) {
+        const deferred = deferredLocalStatuses;
+        deferredLocalStatuses = null;
+        const allowed = cardIdSet();
+        for (const [id, status] of Object.entries(deferred)) queueStatus(id, status, allowed);
+      }
+      for (const [id, status] of [...inFlightWrites]) {
+        if (remoteStatuses.get(id) === status && !snapshot.metadata.hasPendingWrites) inFlightWrites.delete(id);
+      }
+      saveStatusMirror(effectiveStatuses(statuses));
+      if (pendingWrites.size || inFlightWrites.size || snapshot.metadata.hasPendingWrites) setState("saving", "Salvando na nuvem…");
       else if (snapshot.metadata.fromCache) setState("offline", "Dados locais • aguardando servidor");
       else setState("synced", "Sincronizado em tempo real");
     },
@@ -439,16 +549,17 @@ async function refreshFromServer(manual) {
   refreshTimer = setTimeout(async () => {
     if (manual) setState("saving", "Atualizando agora…");
     try {
+      if (pendingWrites.size) await flushStatusWrites();
       const snapshot = navigator.onLine
         ? await getDocsFromServer(statusesCollection(currentUser.uid))
         : await getDocs(statusesCollection(currentUser.uid));
       if (!snapshot.empty || navigator.onLine) {
         const statuses = mapSnapshot(snapshot);
-        knownStatuses = new Map(Object.entries(statuses));
-        saveStatusMirror(statuses);
+        remoteStatuses = mapFromStatusObject(statuses);
+        saveStatusMirror(effectiveStatuses(statuses));
       }
       if (pendingWrites.size) await flushStatusWrites();
-      if (navigator.onLine) setState("synced", "Sincronizado em tempo real");
+      if (navigator.onLine && !pendingWrites.size && !inFlightWrites.size) setState("synced", "Sincronizado em tempo real");
     } catch (error) {
       console.error("SU Mega atualização manual:", error);
       setState(navigator.onLine ? "error" : "offline", navigator.onLine ? "Falha ao atualizar" : "Offline • alterações em espera");
@@ -471,14 +582,25 @@ async function start(user) {
   }
   startedUid = user.uid;
   setState("saving", "Preparando sincronização em tempo real…");
-  await migrateStatuses(user);
+  const initialStatuses = await migrateStatuses(user);
+  remoteStatuses = mapFromStatusObject(initialStatuses);
+  statusSnapshotReady = true;
+  if (deferredLocalStatuses) {
+    const deferred = deferredLocalStatuses;
+    deferredLocalStatuses = null;
+    const allowed = cardIdSet();
+    for (const [id, status] of Object.entries(deferred)) queueStatus(id, status, allowed);
+  }
+  saveStatusMirror(effectiveStatuses(initialStatuses));
   startStatusObserver();
   listenStatuses(user);
   await startContestSync(user);
+  if (pendingWrites.size) scheduleFlush();
   refreshFromServer(false);
 }
 
 ensureUi();
+installLocalWriteCapture();
 installResumeHooks();
 setState("saving", "Verificando login…");
 onAuthStateChanged(auth, user => {
@@ -490,6 +612,11 @@ onAuthStateChanged(auth, user => {
     stopContests?.();
     clearInterval(monitorTimer);
     statusObserver?.disconnect();
+    pendingWrites.clear();
+    inFlightWrites.clear();
+    remoteStatuses.clear();
+    statusSnapshotReady = false;
+    deferredLocalStatuses = null;
     setState("offline", "Entre para sincronizar");
     return;
   }
