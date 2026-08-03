@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const BUILD = "v24";
+  const BUILD = "v25";
 
   function init() {
     let bar = document.getElementById("su-beta-banner");
