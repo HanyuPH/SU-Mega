@@ -70,6 +70,27 @@ jobs:
           path.write_text(text)
           PY
 
+          cat > data/ultimo-concurso.json <<'JSON'
+          {
+            "schemaVersion": 1,
+            "game": "MEGA_SENA",
+            "number": 999800,
+            "date": "2026-08-03",
+            "numbers": [1, 2, 3, 4, 5, 6],
+            "source": "qa://resultado-oficial-simulado",
+            "official": true,
+            "updatedAt": "2026-08-03T10:00:00.000Z",
+            "accumulated": false,
+            "location": "Fonte simulada da auditoria",
+            "prizeTiers": [
+              {"hits": 6, "winners": 1, "prize": 1000000, "description": "6 acertos"},
+              {"hits": 5, "winners": 20, "prize": 10000, "description": "5 acertos"},
+              {"hits": 4, "winners": 1000, "prize": 500, "description": "4 acertos"}
+            ],
+            "nextContest": {"number": 999801, "date": "2099-12-31", "estimatedPrize": 1000000}
+          }
+          JSON
+
       - name: Validar sintaxe de todos os JavaScripts
         run: |
           find . -type f -name '*.js' -not -path './node_modules/*' -print0 | xargs -0 -n1 node --check
@@ -138,8 +159,8 @@ jobs:
             INDEX=0
             while IFS= read -r ROW; do
               INDEX=$((INDEX + 1))
-              NAME=$(printf '%s' "$ROW" | jq -r '.name' | cut -c1-70)
-              DETAILS=$(printf '%s' "$ROW" | jq -r '.details // "Falha sem detalhes"' | tr '\n' ' ' | cut -c1-125)
+              NAME=$(printf '%s' "$ROW" | jq -r '.name' | cut -c1-45)
+              DETAILS=$(printf '%s' "$ROW" | jq -r '.details // "Falha sem detalhes"' | tr '\n' ' ' | cut -c1-80)
               jq -n \
                 --arg state "failure" \
                 --arg context "qa/falha-${INDEX}" \
