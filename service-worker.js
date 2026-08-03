@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v27";
+const CACHE_NAME = "su-mega-c2-beta-v28";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -50,6 +50,10 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
+async function cachedIgnoringVersion(request) {
+  return caches.match(request, { ignoreSearch: true });
+}
+
 async function officialResultsWithCloud(request) {
   const cache = await caches.open(CACHE_NAME);
   let response;
@@ -57,10 +61,10 @@ async function officialResultsWithCloud(request) {
     response = await fetch(request, { cache: "no-store" });
     if (response.ok) await cache.put(request, response.clone());
   } catch {
-    response = await cache.match(request);
+    response = await cachedIgnoringVersion(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=27')"
+  const loader = "\n;import('./beta-banner.js?v=28')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./realtime-cloud.js?v=2'))"
     + ".then(()=>import('./account-panel.js?v=2'))"
@@ -113,7 +117,10 @@ self.addEventListener("fetch", event => {
     url.pathname.endsWith("/beta-layout-review.js") ||
     url.pathname.endsWith("/realtime-cloud.js")
   ) {
-    event.respondWith(fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request)));
+    event.respondWith(
+      fetch(event.request, { cache: "no-store" })
+        .catch(() => cachedIgnoringVersion(event.request))
+    );
     return;
   }
 
@@ -130,7 +137,7 @@ self.addEventListener("fetch", event => {
           }
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => cachedIgnoringVersion(event.request))
     );
     return;
   }
@@ -149,7 +156,7 @@ self.addEventListener("fetch", event => {
   }
 
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+    cachedIgnoringVersion(event.request).then(cached => cached || fetch(event.request).then(response => {
       if (response && response.status === 200 && url.origin === self.location.origin) {
         const copy = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
