@@ -47,9 +47,10 @@ jobs:
           test -f public/beta/contest-lock.js
           test -f public/beta/contest-session.js
           test -f public/beta/contest-selection-ui.js
-          grep -q 'const BUILD = "v25"' public/beta/beta-banner.js
-          grep -q 'su-mega-c2-beta-v25' public/beta/service-worker.js
+          grep -q 'const BUILD = "v26"' public/beta/beta-banner.js
+          grep -q 'su-mega-c2-beta-v26' public/beta/service-worker.js
           grep -q "realtime-cloud.js?v=2" public/beta/service-worker.js
+          grep -q "contest-session.js?v=2" public/beta/service-worker.js
           grep -q "contest-selection-ui.js?v=1" public/beta/service-worker.js
           ! grep -q "cloud-sync-v2.js" public/beta/service-worker.js
           grep -q 'persistentLocalCache' public/beta/realtime-cloud.js
@@ -67,6 +68,11 @@ jobs:
           grep -q 'Concurso selecionado' public/beta/contest-selection-ui.js
           grep -q 'contest-selected-badge' public/beta/contest-selection-ui.js
           grep -q 'aria-current' public/beta/contest-selection-ui.js
+          grep -q 'contestSessionV2' public/beta/contest-session.js
+          grep -q 'su:local-statuses-changed' public/beta/contest-session.js
+          grep -q 'Outros concursos ativos serão preservados' public/beta/contest-session.js
+          ! grep -q 'activeOther' public/beta/contest-session.js
+          ! grep -q 'migrateLegacySessions' public/beta/contest-session.js
           grep -q 'Consulta direta à fonte oficial' public/beta/official-results.js
           grep -q 'ainda não publicado pela CAIXA' public/beta/official-results.js
           grep -q 'Tipo do concurso' public/beta/contest-bets.js
