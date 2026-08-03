@@ -55,7 +55,7 @@ jobs:
           node --check public/contest-session.js
           node --check public/service-worker.js
 
-          # Ambiente Beta SU Mega v23
+          # Ambiente Beta SU Mega v24
           test -f public/beta/index.html
           test -f public/beta/official-results.js
           test -f public/beta/realtime-cloud.js
@@ -63,9 +63,11 @@ jobs:
           test -f public/beta/contest-bets-cloud.js
           test -f public/beta/contest-lock.js
           test -f public/beta/contest-session.js
-          grep -q 'const BUILD = "v23"' public/beta/beta-banner.js
-          grep -q 'su-mega-c2-beta-v23' public/beta/service-worker.js
+          test -f public/beta/contest-selection-ui.js
+          grep -q 'const BUILD = "v24"' public/beta/beta-banner.js
+          grep -q 'su-mega-c2-beta-v24' public/beta/service-worker.js
           grep -q "realtime-cloud.js?v=1" public/beta/service-worker.js
+          grep -q "contest-selection-ui.js?v=1" public/beta/service-worker.js
           ! grep -q "cloud-sync-v2.js" public/beta/service-worker.js
           grep -q 'persistentLocalCache' public/beta/realtime-cloud.js
           grep -q 'persistentMultipleTabManager' public/beta/realtime-cloud.js
@@ -73,11 +75,15 @@ jobs:
           grep -q 'MutationObserver' public/beta/realtime-cloud.js
           grep -q 'getDocsFromServer' public/beta/realtime-cloud.js
           grep -q 'Sincronizado em tempo real' public/beta/realtime-cloud.js
+          grep -q 'Concurso selecionado' public/beta/contest-selection-ui.js
+          grep -q 'contest-selected-badge' public/beta/contest-selection-ui.js
+          grep -q 'aria-current' public/beta/contest-selection-ui.js
           grep -q 'Consulta direta à fonte oficial' public/beta/official-results.js
           grep -q 'ainda não publicado pela CAIXA' public/beta/official-results.js
           grep -q 'Resultado publicado • bloqueado' public/beta/contest-lock.js
           grep -q 'Reabrir concurso' public/beta/contest-session.js
           node --check public/beta/realtime-cloud.js
+          node --check public/beta/contest-selection-ui.js
           node --check public/beta/official-results.js
           node --check public/beta/contest-bets.js
           node --check public/beta/contest-bets-cloud.js
