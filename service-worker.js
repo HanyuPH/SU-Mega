@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v21";
+const CACHE_NAME = "su-mega-c2-beta-v22";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -10,7 +10,6 @@ const APP_ASSETS = [
   "./app.js",
   "./official-results.js",
   "./cloud-sync-v2.js",
-  "./sync-bridge.js",
   "./account-panel.js",
   "./ecosystem-ui.js",
   "./prize-analysis.js",
@@ -60,9 +59,9 @@ async function officialResultsWithCloud(request) {
     response = await cache.match(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=21')"
+  const loader = "\n;import('./beta-banner.js?v=22')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
-    + ".then(()=>import('./cloud-sync-v2.js?v=3'))"
+    + ".then(()=>import('./cloud-sync-v2.js?v=4'))"
     + ".then(()=>import('./account-panel.js'))"
     + ".then(()=>import('./ecosystem-ui.js?v=7'))"
     + ".then(()=>import('./prize-analysis.js?v=2'))"
@@ -108,8 +107,7 @@ self.addEventListener("fetch", event => {
     url.pathname.endsWith("/contest-session.js") ||
     url.pathname.endsWith("/beta-banner.js") ||
     url.pathname.endsWith("/beta-layout-review.js") ||
-    url.pathname.endsWith("/cloud-sync-v2.js") ||
-    url.pathname.endsWith("/sync-bridge.js")
+    url.pathname.endsWith("/cloud-sync-v2.js")
   ) {
     event.respondWith(fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request)));
     return;
