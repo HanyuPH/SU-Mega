@@ -84,8 +84,7 @@ async function uploadStatuses() {
         batch.set(doc(db, "users", currentUser.uid, "gameStatuses", id), {
           status,
           wallet: "C2",
-          updatedAt: serverTimestamp(),
-          syncBridge: true
+          updatedAt: serverTimestamp()
         }, { merge: true });
       }
       await batch.commit();
@@ -101,7 +100,7 @@ async function uploadStatuses() {
 
 function scheduleUpload() {
   clearTimeout(uploadTimer);
-  uploadTimer = setTimeout(uploadStatuses, 220);
+  uploadTimer = setTimeout(uploadStatuses, 1200);
 }
 
 async function pullStatuses() {
@@ -146,6 +145,12 @@ function monitorLocalChanges() {
 }
 
 function installResumeHooks() {
+  window.addEventListener("storage", event => {
+    if (event.key !== STATUS_KEY) return;
+    clearTimeout(uploadTimer);
+    lastSignature = signature();
+    refreshInterface();
+  });
   window.addEventListener("pageshow", pullStatuses);
   window.addEventListener("focus", pullStatuses);
   window.addEventListener("online", pullStatuses);
