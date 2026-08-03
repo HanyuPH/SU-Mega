@@ -10,6 +10,7 @@ const APP_ASSETS = [
   "./app.js",
   "./official-results.js",
   "./realtime-cloud.js",
+  "./account-panel.js",
   "./ecosystem-ui.js",
   "./prize-analysis.js",
   "./contest-bets.js",
@@ -61,6 +62,7 @@ async function officialResultsWithCloud(request) {
   const loader = "\n;import('./beta-banner.js?v=23')"
     + ".then(()=>import('./beta-layout-review.js?v=10'))"
     + ".then(()=>import('./realtime-cloud.js?v=1'))"
+    + ".then(()=>import('./account-panel.js?v=2'))"
     + ".then(()=>import('./ecosystem-ui.js?v=7'))"
     + ".then(()=>import('./prize-analysis.js?v=2'))"
     + ".then(()=>import('./contest-bets.js?v=3'))"
@@ -97,6 +99,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (
+    url.pathname.endsWith("/account-panel.js") ||
     url.pathname.endsWith("/ecosystem-ui.js") ||
     url.pathname.endsWith("/prize-analysis.js") ||
     url.pathname.endsWith("/contest-bets.js") ||
