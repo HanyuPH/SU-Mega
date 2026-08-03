@@ -1,4 +1,4 @@
-const CACHE_NAME = "su-mega-c2-beta-v28";
+const CACHE_NAME = "su-mega-c2-beta-v29";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -64,18 +64,27 @@ async function officialResultsWithCloud(request) {
     response = await cachedIgnoringVersion(request);
   }
 
-  const loader = "\n;import('./beta-banner.js?v=28')"
-    + ".then(()=>import('./beta-layout-review.js?v=10'))"
-    + ".then(()=>import('./realtime-cloud.js?v=2'))"
-    + ".then(()=>import('./account-panel.js?v=2'))"
-    + ".then(()=>import('./ecosystem-ui.js?v=7'))"
-    + ".then(()=>import('./prize-analysis.js?v=2'))"
-    + ".then(()=>import('./contest-bets.js?v=3'))"
-    + ".then(()=>import('./contest-bets-cloud.js?v=4'))"
-    + ".then(()=>import('./contest-lock.js?v=1'))"
-    + ".then(()=>import('./contest-session.js?v=2'))"
-    + ".then(()=>import('./contest-selection-ui.js?v=1'))"
-    + ".catch(error=>console.error('SU Mega Beta:',error));\n";
+  const loader = `
+;(() => {
+  const localModules = import('./beta-banner.js?v=29')
+    .then(() => import('./beta-layout-review.js?v=10'))
+    .then(() => import('./prize-analysis.js?v=2'))
+    .then(() => import('./contest-bets.js?v=3'))
+    .then(() => import('./contest-lock.js?v=1'))
+    .then(() => import('./contest-session.js?v=2'))
+    .then(() => import('./contest-selection-ui.js?v=1'))
+    .catch(error => console.error('SU Mega módulos locais:', error));
+
+  const cloudModules = import('./realtime-cloud.js?v=2')
+    .then(() => import('./account-panel.js?v=2'))
+    .then(() => import('./ecosystem-ui.js?v=7'))
+    .then(() => localModules)
+    .then(() => import('./contest-bets-cloud.js?v=4'))
+    .catch(error => console.warn('SU Mega nuvem indisponível:', error));
+
+  Promise.allSettled([localModules, cloudModules]);
+})();
+`;
 
   if (!response) {
     return new Response(loader, {
