@@ -55,7 +55,7 @@ jobs:
           node --check public/contest-session.js
           node --check public/service-worker.js
 
-          # Ambiente Beta SU Mega v27
+          # Ambiente Beta SU Mega v28
           test -f public/beta/index.html
           test -f public/beta/official-results.js
           test -f public/beta/realtime-cloud.js
@@ -64,12 +64,15 @@ jobs:
           test -f public/beta/contest-lock.js
           test -f public/beta/contest-session.js
           test -f public/beta/contest-selection-ui.js
-          grep -q 'const BUILD = "v27"' public/beta/beta-banner.js
-          grep -q 'su-mega-c2-beta-v27' public/beta/service-worker.js
+          grep -q 'const BUILD = "v28"' public/beta/beta-banner.js
+          grep -q 'su-mega-c2-beta-v28' public/beta/service-worker.js
+          grep -q "beta-banner.js?v=28" public/beta/service-worker.js
           grep -q "realtime-cloud.js?v=2" public/beta/service-worker.js
           grep -q "contest-bets-cloud.js?v=4" public/beta/service-worker.js
           grep -q "contest-session.js?v=2" public/beta/service-worker.js
           grep -q "contest-selection-ui.js?v=1" public/beta/service-worker.js
+          grep -q 'cachedIgnoringVersion' public/beta/service-worker.js
+          grep -q 'ignoreSearch: true' public/beta/service-worker.js
           ! grep -q "cloud-sync-v2.js" public/beta/service-worker.js
           grep -q 'persistentLocalCache' public/beta/realtime-cloud.js
           grep -q 'persistentMultipleTabManager' public/beta/realtime-cloud.js
