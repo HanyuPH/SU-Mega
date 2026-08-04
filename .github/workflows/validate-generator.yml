@@ -1,3 +1,4 @@
+# Revalidação após correção do cache PWA na branch main.
 name: Validar gerador reconstruído
 
 on:
