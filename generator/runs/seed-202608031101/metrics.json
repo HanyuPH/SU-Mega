@@ -1,0 +1,153 @@
+{
+  "games": 705,
+  "uniqueGames": 705,
+  "duplicatedGames": 0,
+  "invalidGameSizes": 0,
+  "invalidNumbers": 0,
+  "repeatedNumbersInsideGames": 0,
+  "pairs": {
+    "totalPossible": 1770,
+    "covered": 1770,
+    "missing": 0,
+    "multiplicityMinimum": 3,
+    "multiplicityMaximum": 9,
+    "multiplicityMean": 5.97457627118644,
+    "multiplicityStandardDeviation": 1.0840017752303237
+  },
+  "triples": {
+    "distinct": 13210,
+    "repeatedOccurrences": 890
+  },
+  "quadruples": {
+    "distinct": 10575,
+    "repeatedOccurrences": 0
+  },
+  "maximumIntersection": 3,
+  "frequencies": {
+    "minimum": 70,
+    "maximum": 71,
+    "mean": 70.5,
+    "standardDeviation": 0.5,
+    "byNumber": {
+      "10": 71,
+      "11": 71,
+      "12": 70,
+      "13": 70,
+      "14": 70,
+      "15": 70,
+      "16": 71,
+      "17": 71,
+      "18": 70,
+      "19": 71,
+      "20": 71,
+      "21": 71,
+      "22": 71,
+      "23": 70,
+      "24": 70,
+      "25": 71,
+      "26": 71,
+      "27": 70,
+      "28": 70,
+      "29": 70,
+      "30": 71,
+      "31": 70,
+      "32": 71,
+      "33": 70,
+      "34": 71,
+      "35": 70,
+      "36": 70,
+      "37": 70,
+      "38": 70,
+      "39": 71,
+      "40": 71,
+      "41": 71,
+      "42": 71,
+      "43": 71,
+      "44": 71,
+      "45": 70,
+      "46": 70,
+      "47": 71,
+      "48": 71,
+      "49": 71,
+      "50": 71,
+      "51": 70,
+      "52": 70,
+      "53": 70,
+      "54": 71,
+      "55": 71,
+      "56": 70,
+      "57": 70,
+      "58": 71,
+      "59": 70,
+      "60": 70,
+      "01": 70,
+      "02": 70,
+      "03": 70,
+      "04": 70,
+      "05": 71,
+      "06": 71,
+      "07": 71,
+      "08": 71,
+      "09": 70
+    }
+  },
+  "execution": {
+    "seed": "202608031101",
+    "candidatesEvaluated": 1711000,
+    "candidatesAccepted": 705,
+    "candidatesRejected": 1710295,
+    "rejectionReasons": {
+      "invalidGameSize": 0,
+      "numberOutsideUniverse": 0,
+      "repeatedNumberInsideCandidate": 0,
+      "duplicateGame": 11,
+      "repeatedQuadrupleOrIntersectionAboveThree": 238449,
+      "noNewPairDuringPhaseB": 0,
+      "lowerScore": 1471835
+    },
+    "phaseAccepted": {
+      "A": 120,
+      "B": 35,
+      "C": 550
+    },
+    "phaseTransitions": [
+      {
+        "phase": "A",
+        "acceptedGames": 0,
+        "missingPairs": 1770
+      },
+      {
+        "phase": "B",
+        "acceptedGames": 120,
+        "missingPairs": 202
+      },
+      {
+        "phase": "C",
+        "acceptedGames": 155,
+        "missingPairs": 0
+      }
+    ],
+    "durationSeconds": 7.389525162,
+    "finalMissingPairs": 0
+  },
+  "generatorIdentity": "Gerador Funcional Reconstruído da SU Mega",
+  "methodologyStatus": {
+    "confirmedFacts": [
+      "A carteira oficial vigente permanece SU Mega – C2.",
+      "A planilha SU Mega - C2.xlsx permanece a fonte oficial dos 705 jogos vigentes.",
+      "A restrição de quadras únicas implica interseção máxima de três dezenas entre jogos distintos."
+    ],
+    "reconstructedFunctionalRules": [
+      "Construção em três fases funcionais A, B e C.",
+      "Prioridade para pares e trincas novas com equilíbrio de frequências e multiplicidade dos pares.",
+      "Rejeição absoluta de jogos duplicados e de quadras já utilizadas."
+    ],
+    "experimentalParameters": [
+      "Pesos da função de pontuação.",
+      "Tamanhos dos lotes de candidatas.",
+      "Probabilidades de forçar pares ausentes.",
+      "Quantidade de jogos do núcleo da Fase A."
+    ],
+    "historicalWeightClaim": false
+  }
+}

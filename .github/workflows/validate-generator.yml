@@ -1,0 +1,49 @@
+# Revalidação após correção do cache PWA na branch main.
+name: Validar gerador reconstruído
+
+on:
+  pull_request:
+    paths:
+      - "generator/**"
+      - ".github/workflows/validate-generator.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Verificar sintaxe
+        run: |
+          node --check generator/generate.mjs
+          node --check generator/metrics.mjs
+          node --check generator/validate.mjs
+          for file in generator/lib/*.mjs generator/tests/*.mjs; do node --check "$file"; done
+
+      - name: Executar testes automatizados
+        run: node --test generator/tests/*.test.mjs
+
+      - name: Validar execução preservada
+        run: |
+          node generator/validate.mjs \
+            --games generator/runs/seed-202608031101/games.csv \
+            --config generator/runs/seed-202608031101/config.json
+
+      - name: Reproduzir carteira em diretório temporário
+        run: |
+          rm -rf /tmp/su-mega-reproduced
+          node generator/generate.mjs \
+            --config generator/config.example.json \
+            --out /tmp/su-mega-reproduced
+          test "$(sha256sum generator/runs/seed-202608031101/games.csv | cut -d' ' -f1)" = \
+               "$(sha256sum /tmp/su-mega-reproduced/games.csv | cut -d' ' -f1)"

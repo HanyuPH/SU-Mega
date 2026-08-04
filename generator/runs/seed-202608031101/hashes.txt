@@ -1,0 +1,22 @@
+SHA256_CODE=ee3aac0a5a035f4d081dc7ddaecb81a73dba1f0a162abd46b34df7f06bd25dc3
+SHA256_CONFIG=4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1
+SHA256_GAMES=d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be
+
+Arquivos incluídos no hash agregado do código:
+LICENSE-INTERNAL.md
+README.md
+config.example.json
+docs/RTP-SUM-006-gerador-funcional-reconstruido.md
+docs/comparacao-c2.md
+docs/metodologia-funcional.md
+generate.mjs
+lib/combinations.mjs
+lib/generator-core.mjs
+lib/io.mjs
+lib/metrics-core.mjs
+lib/rng.mjs
+metrics.mjs
+package.json
+tests/core.test.mjs
+tests/run.test.mjs
+validate.mjs

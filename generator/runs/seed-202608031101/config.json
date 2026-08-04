@@ -1,0 +1,83 @@
+{
+  "identity": "Gerador Funcional Reconstruído da SU Mega",
+  "methodology": "Cobertura Global Balanceada — implementação funcional reconstruída",
+  "seed": "202608031101",
+  "universeSize": 60,
+  "numbersPerGame": 6,
+  "targetGames": 705,
+  "phases": {
+    "A": {
+      "description": "Formação do núcleo",
+      "coreGames": 120,
+      "candidatePoolSize": 1800,
+      "forcedPairProbability": 0.7,
+      "multiPairProbability": 0.55,
+      "multiPairAttempts": 3,
+      "weights": {
+        "newPairs": 2000,
+        "newTriples": 45,
+        "frequencyBalance": 18,
+        "pairMultiplicity": 5,
+        "maximumFrequency": 100
+      }
+    },
+    "B": {
+      "description": "Fechamento dos pares",
+      "candidatePoolSize": 5000,
+      "forcedPairProbability": 1,
+      "multiPairProbability": 0.65,
+      "multiPairAttempts": 3,
+      "maximumGamesBeforeFailure": 620,
+      "weights": {
+        "newPairs": 50000,
+        "newTriples": 25,
+        "frequencyBalance": 30,
+        "pairMultiplicity": 8,
+        "maximumFrequency": 500
+      }
+    },
+    "C": {
+      "description": "Expansão combinatória",
+      "candidatePoolSize": 2400,
+      "forcedPairProbability": 0,
+      "multiPairProbability": 0,
+      "multiPairAttempts": 0,
+      "weights": {
+        "newPairs": 50000,
+        "newTriples": 160,
+        "frequencyBalance": 170,
+        "pairMultiplicity": 20,
+        "maximumFrequency": 500
+      }
+    }
+  },
+  "validation": {
+    "maximumIntersection": 3,
+    "maximumFrequencySpread": 2
+  },
+  "logging": {
+    "progressEveryGames": 25
+  },
+  "parameterStatus": {
+    "confirmedFacts": [
+      "Universo 01 a 60",
+      "Jogos de seis dezenas",
+      "705 jogos na validação mínima",
+      "Quadras únicas",
+      "Interseção máxima de três dezenas",
+      "Cobertura dos 1770 pares"
+    ],
+    "reconstructedFunctionalRules": [
+      "Três fases funcionais A, B e C",
+      "Priorização de pares, trincas, equilíbrio das dezenas e multiplicidade dos pares",
+      "Rejeição de jogos duplicados e quadras repetidas"
+    ],
+    "experimentalParameters": [
+      "Pesos de pontuação",
+      "Tamanho dos lotes de candidatas",
+      "Probabilidades de amostragem dirigida",
+      "120 jogos no núcleo da Fase A"
+    ],
+    "historicalOriginalWeightsClaimed": false
+  }
+}
