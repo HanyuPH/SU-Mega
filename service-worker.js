@@ -45,6 +45,7 @@ self.addEventListener("activate", event => {
       keys
         .filter(key => (
           key.startsWith("su-mega-c1-") ||
+          key.startsWith("su-mega-c2-") ||
           key.startsWith("stable-su-mega-c2-") ||
           key.startsWith("su-mega-c2-stable-")
         ) && key !== CACHE_NAME)
