@@ -44,6 +44,7 @@ self.addEventListener("activate", event => {
     caches.keys().then(keys => Promise.all(
       keys
         .filter(key => (
+          key.startsWith("su-mega-c1-") ||
           key.startsWith("stable-su-mega-c2-") ||
           key.startsWith("su-mega-c2-stable-")
         ) && key !== CACHE_NAME)
