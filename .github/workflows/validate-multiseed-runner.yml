@@ -1,0 +1,52 @@
+name: Validar runner multissementes
+
+on:
+  pull_request:
+    paths:
+      - "generator/multiseed.mjs"
+      - "generator/multiseed/**"
+      - "generator/tests/multiseed.test.mjs"
+      - "generator/docs/RTP-SUM-009-protocolo-revalidacao-multissementes.md"
+      - ".github/workflows/validate-multiseed-runner.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-identity-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar commit exato do PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Verificar sintaxe
+        run: |
+          node --check generator/multiseed.mjs
+          node --check generator/tests/multiseed.test.mjs
+
+      - name: Executar testes automatizados
+        run: node --test generator/tests/*.test.mjs
+
+      - name: Executar somente o teste de identidade
+        env:
+          EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          rm -rf /tmp/su-mega-multiseed-identity
+          node generator/multiseed.mjs \
+            --mode identity \
+            --expected-commit "$EXPECTED_COMMIT" \
+            --out /tmp/su-mega-multiseed-identity
+
+      - name: Confirmar que nenhuma bateria foi produzida
+        run: |
+          test -f /tmp/su-mega-multiseed-identity/identity-report.json
+          test ! -f /tmp/su-mega-multiseed-identity/multiseed-summary.json
