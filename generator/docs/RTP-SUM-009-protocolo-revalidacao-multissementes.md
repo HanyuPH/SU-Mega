@@ -1,7 +1,7 @@
 # RTP-SUM-009 — Protocolo de Revalidação Multissementes do Artefato Oficial
 
-**Status:** implementação técnica preparada; bateria não autorizada e não executada.  
-**Base constitucional:** Constituição Oficial da SU Mega v1.7 e EC-SUM-006.  
+**Status:** implementação técnica corrigida conforme a EC-SUM-007; bateria não autorizada e não executada.  
+**Base constitucional:** Constituição Oficial da SU Mega v1.8, EC-SUM-006 e EC-SUM-007.  
 **Carteira oficial:** SU Mega – C2, integralmente preservada.  
 **Candidata C3:** inexistente.
 
@@ -9,20 +9,20 @@
 
 Preparar um protocolo e um runner multissementes rastreáveis para validar futuramente o Gerador Funcional Reconstruído preservado na branch `main`, eliminando as falhas de identidade identificadas no RTP-SUM-008.
 
-Esta etapa cria somente a infraestrutura de validação. A bateria de 30 sementes depende de nova autorização explícita do usuário.
+Esta etapa cria somente a infraestrutura de validação. A bateria de 30 sementes depende de autorização explícita posterior ao merge do protocolo.
 
 ## 2. Princípios obrigatórios
 
-1. O runner deve importar diretamente `generatePortfolio` de `generator/lib/generator-core.mjs`.
+1. O runner importa diretamente `generatePortfolio` de `generator/lib/generator-core.mjs`.
 2. É proibido copiar, reescrever ou adaptar a lógica do algoritmo em implementação paralela.
 3. Pesos, lotes, PRNG, fases, critérios de desempate e condições de parada permanecem inalterados.
 4. A configuração oficial é `generator/config.example.json`.
 5. O teste de identidade da semente `202608031101` ocorre antes de qualquer bateria.
-6. Qualquer divergência de hash ou métrica cancela automaticamente a execução.
-7. A bateria exige commit exato, árvore Git limpa e identificação da autorização explícita.
-8. Todos os resultados devem ser gravados fora da execução oficial preservada.
+6. Qualquer divergência de hash, métrica, branch, lista de sementes ou diretório de saída cancela automaticamente a execução.
+7. A bateria exige commit exato, branch `main`, árvore Git limpa e identificação da autorização explícita.
+8. Todos os resultados devem ser gravados em diretório novo ou vazio, separado dos resultados oficiais.
 9. Nenhum resultado experimental modifica a SU Mega – C2.
-10. A preparação e a execução da bateria são etapas distintas.
+10. A preparação, o merge e a execução da bateria são etapas distintas.
 
 ## 3. Artefato oficial congelado
 
@@ -74,15 +74,19 @@ Métricas obrigatórias:
 - frequências entre 70 e 71;
 - desvio-padrão das frequências igual a 0,5.
 
-O runner compara o hash da carteira e todas essas métricas. Qualquer divergência encerra o processo com erro antes da primeira semente da bateria.
+O runner compara o hash da carteira e todas essas métricas. Qualquer divergência encerra o processo antes da primeira semente da bateria.
 
 ## 5. Lista de sementes congelada
 
-A lista está em:
+A lista aprovada está em:
 
 `generator/multiseed/seeds.json`
 
-Ela contém 30 sementes previamente registradas:
+SHA-256 aprovado:
+
+`03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911`
+
+Ela contém exatamente 30 sementes:
 
 `202608040001` a `202608040030`.
 
@@ -90,9 +94,42 @@ O documento permanece identificado como:
 
 `planned-not-authorized-for-execution`
 
-A lista não poderá ser alterada entre a autorização e a execução.
+Antes do teste de identidade e antes da bateria, o runner confirma obrigatoriamente:
 
-## 6. Runner oficial
+- caminho canônico do arquivo;
+- SHA-256 exato;
+- exatamente 30 sementes;
+- sementes únicas;
+- exclusão da semente de referência;
+- semente de referência correta;
+- estado não autorizado correto;
+- conteúdo e ordem exatamente iguais à lista aprovada registrada no manifesto.
+
+Qualquer divergência cancela a execução.
+
+## 6. Branch autorizada
+
+A bateria somente pode ser executada na branch:
+
+`main`
+
+O runner consulta automaticamente a branch atual por meio do Git e cancela a execução quando encontra qualquer outro nome.
+
+O teste de identidade utilizado na revisão do PR pode ocorrer na branch do PR, mas o modo `battery` exige obrigatoriamente a `main`.
+
+## 7. Diretório de saída
+
+No modo de bateria, o diretório de saída deve:
+
+- ainda não existir; ou
+- existir como diretório completamente vazio;
+- ser separado do repositório e do diretório estrutural do gerador;
+- não coincidir, conter ou estar contido no diretório oficial `generator/runs/seed-202608031101`;
+- não conter resultado, resumo ou arquivo de bateria anterior.
+
+A validação ocorre antes da criação do diretório de identidade e antes da execução de qualquer semente. Qualquer arquivo existente cancela a bateria.
+
+## 8. Runner oficial
 
 Arquivo:
 
@@ -100,9 +137,7 @@ Arquivo:
 
 O runner possui dois modos.
 
-### 6.1 Modo de identidade
-
-Comando:
+### 8.1 Modo de identidade
 
 ```bash
 node generator/multiseed.mjs \
@@ -113,6 +148,7 @@ node generator/multiseed.mjs \
 
 Esse modo:
 
+- verifica o hash e o conteúdo exato da lista aprovada;
 - verifica hashes do artefato oficial;
 - verifica o commit informado;
 - executa somente a semente de referência;
@@ -120,7 +156,7 @@ Esse modo:
 - grava relatório e CSV de identidade;
 - não executa as 30 sementes.
 
-### 6.2 Modo de bateria
+### 8.2 Modo de bateria
 
 Comando reservado para etapa futura:
 
@@ -130,20 +166,22 @@ node generator/multiseed.mjs \
   --expected-commit <COMMIT_CONGELADO> \
   --authorization-id <IDENTIFICADOR_DA_AUTORIZACAO> \
   --confirm-battery AUTORIZACAO-EXPLICITA-CONFIRMADA \
-  --out <DIRETORIO_DE_RESULTADOS>
+  --out <DIRETORIO_NOVO_OU_VAZIO_FORA_DO_REPOSITORIO>
 ```
 
-O modo de bateria permanece bloqueado quando faltar qualquer um dos seguintes elementos:
+O modo de bateria permanece bloqueado quando faltar ou divergir qualquer um dos seguintes elementos:
 
 - commit esperado;
 - coincidência entre commit esperado e commit executado;
+- branch `main`;
 - árvore Git limpa;
 - identificador da autorização;
-- confirmação literal exigida.
+- confirmação literal exigida;
+- hash e conteúdo da lista de sementes;
+- diretório de saída novo ou vazio e separado;
+- teste de identidade.
 
-Mesmo depois dessas verificações, o runner executa primeiro o teste de identidade e cancela a bateria diante de qualquer divergência.
-
-## 7. Preservação dos resultados futuros
+## 9. Preservação dos resultados futuros
 
 Para cada semente serão preservados:
 
@@ -158,58 +196,86 @@ O relatório consolidado registrará:
 - commit;
 - branch;
 - ambiente Node/V8/sistema operacional/CPU;
+- validação do diretório de saída;
+- verificação criptográfica e semântica das sementes;
 - resultado do teste de identidade;
 - lista congelada de sementes;
 - resultado de cada execução.
 
-## 8. Testes automatizados
+## 10. Testes automatizados
 
 Os testes verificam:
 
 1. existência de 30 sementes únicas;
-2. exclusão da semente de referência da bateria;
+2. exclusão da semente de referência;
 3. estado não autorizado da lista;
-4. hashes individuais do artefato oficial;
-5. modo padrão limitado ao teste de identidade;
-6. bloqueio da bateria sem autorização;
-7. exigência de commit exato;
-8. exigência de árvore Git limpa.
+4. hash exato de `seeds.json`;
+5. correspondência exata com a lista aprovada;
+6. cancelamento por hash alterado;
+7. cancelamento por lista alterada;
+8. hashes individuais do artefato oficial;
+9. modo padrão limitado à identidade;
+10. bloqueio sem autorização;
+11. commit exato;
+12. árvore Git limpa;
+13. cancelamento em branch divergente;
+14. aceitação somente da branch `main`;
+15. cancelamento diante de diretório não vazio;
+16. proibição de utilizar o diretório oficial de referência.
 
 O workflow `validate-multiseed-runner.yml` executa somente:
 
 - verificação de sintaxe;
-- testes automatizados;
-- teste de identidade.
+- todos os testes automatizados;
+- teste de identidade;
+- confirmação de que nenhum resumo de bateria foi produzido.
 
 O workflow não contém comando de bateria.
 
-## 9. Critérios para futura autorização
+## 11. Critérios para futura autorização
 
 Antes da bateria, deverão ser confirmados:
 
-1. PR do protocolo revisado e incorporado;
+1. PR do protocolo revisado e incorporado à `main`;
 2. commit exato congelado;
-3. checks aprovados;
-4. identidade aprovada nesse commit;
-5. lista de sementes inalterada;
-6. autorização explícita do usuário para a bateria;
-7. diretório de saída vazio e separado;
-8. proibição de alterações durante a execução.
+3. execução na branch `main`;
+4. árvore Git limpa;
+5. checks aprovados;
+6. identidade aprovada nesse commit;
+7. hash e lista de sementes aprovados;
+8. autorização explícita do usuário para a bateria;
+9. diretório de saída novo ou vazio e separado;
+10. proibição de alterações durante a execução.
 
-## 10. Critérios de cancelamento
+## 12. Critérios de cancelamento
 
 A bateria deverá ser cancelada automaticamente se:
 
-- qualquer hash individual divergir;
+- qualquer hash individual do artefato divergir;
 - o commit divergir;
+- a branch não for `main`;
 - a árvore Git estiver suja;
 - faltar autorização;
+- o hash da lista de sementes divergir;
+- a lista não tiver exatamente 30 sementes únicas;
+- a referência estiver incluída;
+- o conteúdo ou a ordem não corresponder à lista aprovada;
+- o diretório de saída estiver ocupado ou conflitar com área oficial;
 - o hash da carteira de referência divergir;
 - qualquer métrica de referência divergir;
-- a lista tiver sementes repetidas ou vazias;
 - ocorrer erro em qualquer semente.
 
-## 11. Limitações
+## 13. Correções da EC-SUM-007
+
+As três ressalvas obrigatórias foram implementadas:
+
+1. verificação automática da branch `main` no modo de bateria;
+2. hash SHA-256 e correspondência integral da lista de sementes antes da identidade e da bateria;
+3. validação preventiva do diretório de saída antes de qualquer gravação.
+
+Foram adicionados testes negativos específicos para branch divergente, hash alterado, lista alterada, diretório não vazio e diretório oficial.
+
+## 14. Limitações
 
 - a infraestrutura preparada ainda não demonstra estabilidade multissementes;
 - nenhum resultado das 30 sementes foi produzido nesta etapa;
@@ -217,6 +283,6 @@ A bateria deverá ser cancelada automaticamente se:
 - sucesso estrutural não demonstra superioridade probabilística;
 - os parâmetros continuam classificados conforme o RTP-SUM-006.
 
-## 12. Recomendação
+## 15. Recomendação
 
-Submeter este protocolo e o runner para revisão técnica e constitucional. Após incorporação, solicitar autorização específica e separada para executar a bateria de 30 sementes no commit congelado.
+Após a aprovação dos checks, verificar o escopo do PR nº 6 e encaminhar o cumprimento da EC-SUM-007 à Constituição. Somente então o PR poderá sair do modo rascunho. O merge e a execução da bateria dependerão de autorizações explícitas separadas.
