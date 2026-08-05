@@ -1,0 +1,98 @@
+name: Importar artefato documental RTP-SUM-010
+
+on:
+  pull_request:
+    branches:
+      - automation/preserve-rtp-sum-010-artifact
+    paths:
+      - "TRIGGER-RTP-SUM-010"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  import-documentary-artifact:
+    if: github.event.pull_request.head.ref == 'automation/trigger-preserve-rtp-sum-010'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_BRANCH: agent/preservacao-rtp-sum-010
+      HELPER_BRANCH: automation/preserve-rtp-sum-010-artifact
+      ARTIFACT_ID: "8930794467"
+      ZIP_SHA256: 56d8b0ff3a6f85e27b7058ab777762862440ee5d88d1b741f52159765895ae8f
+      TAR_SHA256: 5b0595b071b217dedfae69212256ae87ff86df993e249f35af31967de507d26a
+      SUMMARY_SHA256: eb95946804f46eb5fcbebeac77b51885d55a08c4c8dbaa1cb8dd781c8c188bb8
+      IDENTITY_SHA256: 5e86d1d336e90a42b17cf9d32593a36bb537913cba8eb440df7b5975b4f6ca8a
+      MANIFEST_SHA256: 7d0af586bf6ccce0c6b4586dee84ecc203b8c0c47aa92448436a5cd065d81c99
+    steps:
+      - name: Baixar materiais auxiliares
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.HELPER_BRANCH }}
+          path: helper
+          fetch-depth: 1
+
+      - name: Baixar branch documental
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          path: repo
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Confirmar escopo inicial
+        run: |
+          set -euo pipefail
+          cd repo
+          test "$(git branch --show-current)" = "$TARGET_BRANCH"
+          test -z "$(git status --porcelain)"
+          test -f generator/docs/RTP-SUM-010-resultado-revalidacao-multissementes-oficial.md
+          test ! -e generator/evidence/rtp-sum-010
+
+      - name: Baixar e verificar artefato temporário
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/rtp-sum-010.zip
+          echo "$ZIP_SHA256  /tmp/rtp-sum-010.zip" | sha256sum -c -
+          mkdir -p /tmp/rtp-sum-010
+          unzip -q /tmp/rtp-sum-010.zip -d /tmp/rtp-sum-010
+
+      - name: Montar preservação documental
+        run: |
+          set -euo pipefail
+          mkdir -p repo/generator/evidence/rtp-sum-010
+          base64 -d helper/automation/rtp-sum-010/evidence-json.gz.b64 | gzip -d > repo/generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json
+          base64 -d helper/automation/rtp-sum-010/generate-preservation.py.gz.b64 | gzip -d > /tmp/generate-preservation.py
+          ROOT=/tmp/rtp-sum-010/su-mega-rtp-sum-009-battery-20260805-0938
+          cp "$ROOT/identity/identity-report.json" repo/generator/evidence/rtp-sum-010/identity-report.json
+          cp "$ROOT/multiseed-summary.json" repo/generator/evidence/rtp-sum-010/multiseed-summary.json
+          cp "$ROOT/files-sha256.txt" repo/generator/evidence/rtp-sum-010/files-sha256.txt
+          cp /tmp/rtp-sum-010/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz repo/generator/evidence/rtp-sum-010/
+          cd repo
+          python /tmp/generate-preservation.py
+
+      - name: Verificar integridade e restrições
+        run: |
+          set -euo pipefail
+          cd repo
+          echo "$TAR_SHA256  generator/evidence/rtp-sum-010/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz" | sha256sum -c -
+          echo "$SUMMARY_SHA256  generator/evidence/rtp-sum-010/multiseed-summary.json" | sha256sum -c -
+          echo "$IDENTITY_SHA256  generator/evidence/rtp-sum-010/identity-report.json" | sha256sum -c -
+          echo "$MANIFEST_SHA256  generator/evidence/rtp-sum-010/files-sha256.txt" | sha256sum -c -
+          test "$(jq -r '.battery.executedSeeds' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "30"
+          test "$(jq -r '.rows | length' generator/evidence/rtp-sum-010/portfolio-hashes.json)" = "30"
+          test -z "$(git status --short | awk '{print $2}' | grep -Ev '^generator/evidence/rtp-sum-010/' || true)"
+          test ! -e .github/workflows/execute-rtp-sum-009-battery.yml
+
+      - name: Commitar evidências na branch documental
+        run: |
+          set -euo pipefail
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generator/evidence/rtp-sum-010
+          git commit -m "docs: preservar evidências definitivas do RTP-SUM-010"
+          git push origin "HEAD:$TARGET_BRANCH"
