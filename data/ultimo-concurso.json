@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "game": "MEGA_SENA",
-  "number": 3039,
-  "date": "2026-08-02",
+  "number": 3040,
+  "date": "2026-08-04",
   "numbers": [
-    14,
+    3,
     16,
-    21,
-    39,
-    53,
-    58
+    24,
+    30,
+    49,
+    54
   ],
   "drawOrder": [
-    21,
-    58,
-    53,
     16,
-    14,
-    39
+    54,
+    49,
+    30,
+    3,
+    24
   ],
-  "source": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3039",
+  "source": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3040",
   "official": true,
-  "updatedAt": "2026-08-03T08:54:53.825Z",
+  "updatedAt": "2026-08-05T06:42:56.494Z",
   "accumulated": true,
-  "location": "SÃO PAULO,  SP",
+  "location": "SÃO PAULO, SP",
   "prizeTiers": [
     {
       "hits": 6,
@@ -33,20 +33,20 @@
     },
     {
       "hits": 5,
-      "winners": 86,
-      "prize": 45932.28,
+      "winners": 89,
+      "prize": 47258.21,
       "description": "5 acertos"
     },
     {
       "hits": 4,
-      "winners": 6332,
-      "prize": 1028.31,
+      "winners": 6555,
+      "prize": 1057.65,
       "description": "4 acertos"
     }
   ],
   "nextContest": {
-    "number": 3040,
-    "date": "2026-08-04",
-    "estimatedPrize": 135000000
+    "number": 3041,
+    "date": "2026-08-06",
+    "estimatedPrize": 150000000
   }
 }
