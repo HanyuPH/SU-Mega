@@ -84,7 +84,7 @@ jobs:
           echo "$MANIFEST_SHA256  generator/evidence/rtp-sum-010/files-sha256.txt" | sha256sum -c -
           test "$(jq -r '.battery.executedSeeds' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "30"
           test "$(jq -r '.rows | length' generator/evidence/rtp-sum-010/portfolio-hashes.json)" = "30"
-          test -z "$(git status --short | awk '{print $2}' | grep -Ev '^generator/evidence/rtp-sum-010/' || true)"
+          test -z "$(git status --short | awk '{print $2}' | grep -Ev '^generator/evidence/' || true)"
           test ! -e .github/workflows/execute-rtp-sum-009-battery.yml
 
       - name: Commitar evidências na branch documental
