@@ -1,0 +1,63 @@
+{
+  "document": "EC-SUM-008 — Manifesto de preservação definitiva do RTP-SUM-010",
+  "constitutionalVersion": "1.9",
+  "baseCommit": "02717317bfa523f125324b406a68c07b128a396d",
+  "scope": "documents-evidence-and-battery-artifact-only",
+  "files": [
+    {
+      "path": "generator/docs/RTP-SUM-010-resultado-revalidacao-multissementes-oficial.md",
+      "sizeBytes": 9792,
+      "sha256": "b3cebb37cd7749c9704c544c13fbb59fe2353230b2e0cc868d8e7324d91fca0b"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/README.md",
+      "sizeBytes": 2024,
+      "sha256": "f25c825b97c356f19355fe59301f844d8e3d82023293127619fe7f9e3ca721b0"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz",
+      "sizeBytes": 193895,
+      "sha256": "5b0595b071b217dedfae69212256ae87ff86df993e249f35af31967de507d26a"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json",
+      "sizeBytes": 43616,
+      "sha256": "9a9276ffe1558b3e45cfa9597a563844072c6cce7a53ec5206d58f754c4bd7de"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/execution-provenance.json",
+      "sizeBytes": 1734,
+      "sha256": "9e5d683c56731a4199701543b2527f31aa0c3c1c3c501deae7d05f829eacb026"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/files-sha256.txt",
+      "sizeBytes": 11985,
+      "sha256": "7d0af586bf6ccce0c6b4586dee84ecc203b8c0c47aa92448436a5cd065d81c99"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/identity-report.json",
+      "sizeBytes": 4294,
+      "sha256": "5e86d1d336e90a42b17cf9d32593a36bb537913cba8eb440df7b5975b4f6ca8a"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/independent-verification-report.md",
+      "sizeBytes": 3219,
+      "sha256": "3770edb2ddcebdbc3291212080c7028e56946ba0cc6389858446831fa42ea0e0"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/independent-verification.json",
+      "sizeBytes": 9577,
+      "sha256": "6576b3c37223f075e088bc47578236810aed53a15b05611db74594f9451a2fb7"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/multiseed-summary.json",
+      "sizeBytes": 26169,
+      "sha256": "eb95946804f46eb5fcbebeac77b51885d55a08c4c8dbaa1cb8dd781c8c188bb8"
+    },
+    {
+      "path": "generator/evidence/rtp-sum-010/portfolio-hashes.json",
+      "sizeBytes": 5081,
+      "sha256": "9bcee5b2b560e51c21ef5cff9007fab6116376cfe3076dae4b2800754ab088f6"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "document": "RTP-SUM-010 — Relação das 30 sementes e hashes das carteiras",
+  "source": "multiseed-summary.json",
+  "officialCommit": "02717317bfa523f125324b406a68c07b128a396d",
+  "authorizationId": "AUT-USUARIO-20260805-0938-RTP-SUM-009",
+  "seedListSha256": "03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911",
+  "count": 30,
+  "orderedPortfolioHashesSha256": "790b458de46b09d6b8a30227cff89da6b0b566ba53e9d7e8a29c0b4c82bcde21",
+  "rows": [
+    {
+      "order": 1,
+      "seed": "202608040001",
+      "portfolioSha256": "4f4aa4463d3aad4089828aed6522f26178bc42470ae0f7c346b28e686d181c8c"
+    },
+    {
+      "order": 2,
+      "seed": "202608040002",
+      "portfolioSha256": "84babb816b495a78c21b43e6f698da89a5678e198b75dfb3108e5e642328c525"
+    },
+    {
+      "order": 3,
+      "seed": "202608040003",
+      "portfolioSha256": "da3287fcc21b530f796b29af1b8aedbfc4b2334983ca73e73c295a9e6c164b23"
+    },
+    {
+      "order": 4,
+      "seed": "202608040004",
+      "portfolioSha256": "b7cbeafa73f2774984cba226115687be85e69b75479974af05c344b1e27a03ed"
+    },
+    {
+      "order": 5,
+      "seed": "202608040005",
+      "portfolioSha256": "1ad40ac2886b1844610ea8dc99061ea2aee6e4dd036ecb1062bae7f3a8d089cf"
+    },
+    {
+      "order": 6,
+      "seed": "202608040006",
+      "portfolioSha256": "0286172c01e93f5e183416269ca19218540cdf845a54004ea83480013f5ae680"
+    },
+    {
+      "order": 7,
+      "seed": "202608040007",
+      "portfolioSha256": "32ced7215d28f6d2951f4e45b6f81851992c096d710ae288fdb7d5f8590cb377"
+    },
+    {
+      "order": 8,
+      "seed": "202608040008",
+      "portfolioSha256": "3702deec787f1114b093cf73e7afd44372d70baa7bf152c16c0fc305b3051209"
+    },
+    {
+      "order": 9,
+      "seed": "202608040009",
+      "portfolioSha256": "7a13b98f59d5ec8216c9c40cc7962b788c3a07d589cc927ab748103739a3ef22"
+    },
+    {
+      "order": 10,
+      "seed": "202608040010",
+      "portfolioSha256": "a315a4ddd67593b57def072bb9e4892f022b811af397692e8871ed3503906904"
+    },
+    {
+      "order": 11,
+      "seed": "202608040011",
+      "portfolioSha256": "7dd159934663b53991b4551bb7f2046f38dbfbc55a914f6a04342e1f198232e3"
+    },
+    {
+      "order": 12,
+      "seed": "202608040012",
+      "portfolioSha256": "4517bc24850ff747936e36f7f91ff0d005de859f9e930bb86bd33fa8862c1bd0"
+    },
+    {
+      "order": 13,
+      "seed": "202608040013",
+      "portfolioSha256": "ea4da92163337ca8ff4feea24c9af2f2f87c51388d28bc478882c3b08a08c099"
+    },
+    {
+      "order": 14,
+      "seed": "202608040014",
+      "portfolioSha256": "ed2d8815c850f94556bae99364d5084d785fc8fb68f55e5a7c96d6841620083f"
+    },
+    {
+      "order": 15,
+      "seed": "202608040015",
+      "portfolioSha256": "995449e306cedad5774929e80575371a2cde7265a8065c230f69c568f94a04dc"
+    },
+    {
+      "order": 16,
+      "seed": "202608040016",
+      "portfolioSha256": "66e90d3b07a0947c8d80902ddfd6b5e5883d0af238ee784d46454e8acd2a1691"
+    },
+    {
+      "order": 17,
+      "seed": "202608040017",
+      "portfolioSha256": "7b2d4083c2b0785ec69cf62643c7c5c5b66ef256ee18aa4c6e57b83dc2a8adf0"
+    },
+    {
+      "order": 18,
+      "seed": "202608040018",
+      "portfolioSha256": "f4e6a0c55ca25a80ffaac78ca116639c698aa80c79287dadf2c2f4bf31172f1b"
+    },
+    {
+      "order": 19,
+      "seed": "202608040019",
+      "portfolioSha256": "fb37bc9a23de444503f0d1d7c34c3da16e1ddcd03504f7cd1890ab4416fd0b41"
+    },
+    {
+      "order": 20,
+      "seed": "202608040020",
+      "portfolioSha256": "808b6db009bef28aa147a605318621b2e3dc4c900ed460534a40e366b99d0cdd"
+    },
+    {
+      "order": 21,
+      "seed": "202608040021",
+      "portfolioSha256": "87702bab025c6e5a9aa30e87217e841b66714e21e2b9744ba4efe8f075da104d"
+    },
+    {
+      "order": 22,
+      "seed": "202608040022",
+      "portfolioSha256": "a6993f98ecf0dc17d244de77ccddd377fe0396cf9304b78e2a96fd60dd0a8f3f"
+    },
+    {
+      "order": 23,
+      "seed": "202608040023",
+      "portfolioSha256": "89d6d06299eebeeb24f005d41f8219497078bc6e68b633bb2c1ca06a5bd48200"
+    },
+    {
+      "order": 24,
+      "seed": "202608040024",
+      "portfolioSha256": "7e9852380ed0e78dc166313d5dbcb49bdd8a02a53f30c1760174103a497305e5"
+    },
+    {
+      "order": 25,
+      "seed": "202608040025",
+      "portfolioSha256": "f32f4d66d26218ed266cbb92effe84f302ead740ea75829eedb3440113c967ca"
+    },
+    {
+      "order": 26,
+      "seed": "202608040026",
+      "portfolioSha256": "9cc1cb3a7808e411ca4a5d64e070bba3b90fecdad8ac0f3469ac659118fcb32b"
+    },
+    {
+      "order": 27,
+      "seed": "202608040027",
+      "portfolioSha256": "0e1a47979ec3b558d25676d5936bb2782eba09b4bfc3dfbd290572f063f944cf"
+    },
+    {
+      "order": 28,
+      "seed": "202608040028",
+      "portfolioSha256": "f5f87f76215daea230da1c837f1aaf1cd58d84b3e9841d8d9478eb227a36bed5"
+    },
+    {
+      "order": 29,
+      "seed": "202608040029",
+      "portfolioSha256": "1eb2698297bad32b4bc146a2f6b806cba9bbf9a69dd51f816d75e7eeb9b3cc4b"
+    },
+    {
+      "order": 30,
+      "seed": "202608040030",
+      "portfolioSha256": "72815ee584ce572072f7eb1b930d4359956877c88812d96671fafd0147bd50d9"
+    }
+  ]
+}
