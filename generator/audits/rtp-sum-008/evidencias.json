@@ -1,0 +1,74 @@
+{
+  "audit": {
+    "id": "RTP-SUM-008",
+    "date": "2026-08-04",
+    "repository": "HanyuPH/SU-Mega",
+    "auditBranch": "audit/rtp-sum-008-reconciliacao",
+    "officialMainCommit": "ce51511f114aface34871ef23a67897fafaab5f9"
+  },
+  "officialArtifact": {
+    "entrypoint": "generator/generate.mjs",
+    "core": "generator/lib/generator-core.mjs",
+    "rng": "generator/lib/rng.mjs",
+    "rngAlgorithm": "xorshift64* BigInt 64-bit",
+    "aggregateCodeSha256": "ee3aac0a5a035f4d081dc7ddaecb81a73dba1f0a162abd46b34df7f06bd25dc3",
+    "configurationSha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+    "referencePortfolioSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+    "individualSha256": {
+      "generator/generate.mjs": "34e25eba413f364987c6bde663e65ba26a6fb9722e054aae2cba14d5a3c43b41",
+      "generator/lib/generator-core.mjs": "694da8158293edd5ae700f2a57d0b11a7466d645fa3cd97b163cbe3ea8838344",
+      "generator/lib/rng.mjs": "4465f864684717eee26c8bbc3061308891d50a24171c837095a43f3ee4c04b45"
+    },
+    "candidatePoolSize": {"A": 1800, "B": 5000, "C": 2400},
+    "referenceSeed": "202608031101",
+    "referenceMetrics": {
+      "candidatesEvaluated": 1711000,
+      "pairClosureGame": 155,
+      "distinctTriples": 13210,
+      "frequencyMinimum": 70,
+      "frequencyMaximum": 71,
+      "frequencyStandardDeviation": 0.5
+    }
+  },
+  "rtpSum007Artifact": {
+    "packageName": "RTP_SUM_007_Validacao_Multissementes.zip",
+    "reportName": "RTP-SUM-007.md",
+    "executableFile": null,
+    "branch": null,
+    "commit": null,
+    "artifactSha256": "53211ac2ec31359d76ad3ba55c95bca2689d9fe4b7cabc07a64341ff8909ea4e",
+    "candidatePoolPerPosition": 800,
+    "candidatesPerExecution": 564000,
+    "referenceSeed": "202608031101",
+    "referenceMetrics": {
+      "pairClosureGame": 185,
+      "distinctTriples": 13648,
+      "frequencyMinimum": 68,
+      "frequencyMaximum": 73,
+      "frequencyStandardDeviation": 0.9574
+    }
+  },
+  "forensicReproduction": {
+    "classification": "single-seed isolated hypothesis test; not a multiseed battery",
+    "officialCodeUsed": true,
+    "onlyTemporaryChange": "candidatePoolSize A/B/C set to 800 outside repository",
+    "temporaryConfigurationSha256": "d56d58a38929c844624cbebbdb49083d108e7760d78b5bd10dcc17058fdb76d0",
+    "portfolioSha256": "b36c6c46796571286047a5223ebc3dfd9eaa129031deab23c18e2fb0c0fc7f6b",
+    "metrics": {
+      "candidatesEvaluated": 564000,
+      "pairClosureGame": 161,
+      "distinctTriples": 13053,
+      "frequencyMinimum": 69,
+      "frequencyMaximum": 71,
+      "frequencyStandardDeviation": 0.5322906474223771
+    },
+    "matchesRtpSum007": false
+  },
+  "conclusion": {
+    "exactIdentityWithMain": false,
+    "batchSizeOnlyExplainsDivergence": false,
+    "rtpSum007Validity": "limited to unidentified local artifact",
+    "newOfficialMultiseedBatteryRequired": true,
+    "ecSum005CaveatCanBeClosed": false
+  }
+}
