@@ -1,0 +1,101 @@
+name: Executar bateria RTP-SUM-009 autorizada
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/execute-rtp-sum-009-battery.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  execute-authorized-battery:
+    if: github.event.pull_request.head.ref == 'execution/rtp-sum-009-battery-20260805'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      EXPECTED_COMMIT: 02717317bfa523f125324b406a68c07b128a396d
+      AUTHORIZATION_ID: AUT-USUARIO-20260805-0938-RTP-SUM-009
+      OUTPUT_DIRECTORY: /tmp/su-mega-rtp-sum-009-battery-20260805-0938
+      ARCHIVE_PATH: /tmp/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz
+    steps:
+      - name: Baixar exclusivamente o commit oficial congelado
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.EXPECTED_COMMIT }}
+          fetch-depth: 0
+
+      - name: Fixar branch main e validar estado Git
+        shell: bash
+        run: |
+          set -euo pipefail
+          git switch -C main "$EXPECTED_COMMIT"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+          test "$(git branch --show-current)" = "main"
+          test -z "$(git status --porcelain)"
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Executar pré-validação completa
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check generator/multiseed.mjs
+          node --check generator/tests/multiseed.test.mjs
+          node --test generator/tests/*.test.mjs
+          test ! -e "$OUTPUT_DIRECTORY"
+
+      - name: Executar bateria oficial de 30 sementes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node generator/multiseed.mjs \
+            --mode battery \
+            --expected-commit "$EXPECTED_COMMIT" \
+            --authorization-id "$AUTHORIZATION_ID" \
+            --confirm-battery AUTORIZACAO-EXPLICITA-CONFIRMADA \
+            --out "$OUTPUT_DIRECTORY"
+
+      - name: Validar resultados e preservar hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$OUTPUT_DIRECTORY/multiseed-summary.json"
+          test -f "$OUTPUT_DIRECTORY/identity/identity-report.json"
+          test "$(find "$OUTPUT_DIRECTORY" -maxdepth 1 -type d -name 'seed-*' | wc -l | tr -d ' ')" = "30"
+          node -e '
+            const fs = require("fs");
+            const p = process.env.OUTPUT_DIRECTORY + "/multiseed-summary.json";
+            const s = JSON.parse(fs.readFileSync(p, "utf8"));
+            if (s.mode !== "battery") throw new Error("modo divergente");
+            if (s.git.commit !== process.env.EXPECTED_COMMIT) throw new Error("commit divergente");
+            if (s.git.branch !== "main") throw new Error("branch divergente");
+            if (s.authorization.id !== process.env.AUTHORIZATION_ID) throw new Error("autorização divergente");
+            if (!s.identity?.approved) throw new Error("identidade não aprovada");
+            if (s.results?.length !== 30) throw new Error("quantidade de sementes divergente");
+            if (new Set(s.results.map(r => r.seed)).size !== 30) throw new Error("sementes repetidas");
+            if (s.seedsVerification?.sha256 !== "03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911") throw new Error("hash da lista divergente");
+          '
+          test -z "$(git status --porcelain)"
+          (
+            cd "$OUTPUT_DIRECTORY"
+            find . -type f ! -name files-sha256.txt -print0 | sort -z | xargs -0 sha256sum > files-sha256.txt
+          )
+          tar -C "$(dirname "$OUTPUT_DIRECTORY")" -czf "$ARCHIVE_PATH" "$(basename "$OUTPUT_DIRECTORY")"
+          sha256sum "$ARCHIVE_PATH" > "$ARCHIVE_PATH.sha256"
+
+      - name: Publicar artefato da bateria
+        uses: actions/upload-artifact@v4
+        with:
+          name: RTP-SUM-009-bateria-30-sementes-20260805
+          path: |
+            ${{ env.OUTPUT_DIRECTORY }}
+            ${{ env.ARCHIVE_PATH }}
+            ${{ env.ARCHIVE_PATH }}.sha256
+          if-no-files-found: error
+          retention-days: 90
