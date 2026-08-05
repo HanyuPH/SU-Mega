@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   import-documentary-artifact:
-    if: github.event.pull_request.head.ref == 'automation/trigger-preserve-rtp-sum-010'
+    if: github.event.pull_request.head.ref == 'agent/rtp-sum-010-import-request'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
