@@ -1,0 +1,87 @@
+{
+  "protocol": "RTP-SUM-009 — Protocolo de Revalidação Multissementes do Artefato Oficial",
+  "repository": "HanyuPH/SU-Mega",
+  "officialGeneratorCommit": "ce51511f114aface34871ef23a67897fafaab5f9",
+  "protocolBaseCommit": "d21aad3305ecd08fbb2fb36419ad1a9c3435fe9a",
+  "expectedBatteryBranch": "main",
+  "aggregateCodeSha256FromRtpSum006": "ee3aac0a5a035f4d081dc7ddaecb81a73dba1f0a162abd46b34df7f06bd25dc3",
+  "configuration": {
+    "path": "generator/config.example.json",
+    "sha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1"
+  },
+  "seedList": {
+    "path": "generator/multiseed/seeds.json",
+    "sha256": "03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911",
+    "count": 30,
+    "referenceSeed": "202608031101",
+    "requiredStatus": "planned-not-authorized-for-execution",
+    "approvedSeeds": [
+      "202608040001",
+      "202608040002",
+      "202608040003",
+      "202608040004",
+      "202608040005",
+      "202608040006",
+      "202608040007",
+      "202608040008",
+      "202608040009",
+      "202608040010",
+      "202608040011",
+      "202608040012",
+      "202608040013",
+      "202608040014",
+      "202608040015",
+      "202608040016",
+      "202608040017",
+      "202608040018",
+      "202608040019",
+      "202608040020",
+      "202608040021",
+      "202608040022",
+      "202608040023",
+      "202608040024",
+      "202608040025",
+      "202608040026",
+      "202608040027",
+      "202608040028",
+      "202608040029",
+      "202608040030"
+    ]
+  },
+  "officialResultDirectories": [
+    "generator/runs/seed-202608031101"
+  ],
+  "files": {
+    "generator/config.example.json": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+    "generator/lib/combinations.mjs": "43e57827f7077dfcd9e0b9fd9caa6a2e376ff657e25f7a1430fac45703b42c60",
+    "generator/lib/generator-core.mjs": "694da8158293edd5ae700f2a57d0b11a7466d645fa3cd97b163cbe3ea8838344",
+    "generator/lib/io.mjs": "e14132a5201221a0ef552368878eb31435139af100032f921dbd32a44d8b449f",
+    "generator/lib/metrics-core.mjs": "02ed5f2235a612d69a8080c6573b84b1cec90225abea37548744f6329f1d8bce",
+    "generator/lib/rng.mjs": "4465f864684717eee26c8bbc3061308891d50a24171c837095a43f3ee4c04b45",
+    "generator/runs/seed-202608031101/config.json": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+    "generator/runs/seed-202608031101/games.csv": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be"
+  },
+  "reference": {
+    "seed": "202608031101",
+    "portfolioSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+    "metrics": {
+      "games": 705,
+      "uniqueGames": 705,
+      "candidatesEvaluated": 1711000,
+      "phaseAccepted": {
+        "A": 120,
+        "B": 35,
+        "C": 550
+      },
+      "pairClosureGame": 155,
+      "pairsCovered": 1770,
+      "distinctTriples": 13210,
+      "distinctQuadruples": 10575,
+      "repeatedQuadruples": 0,
+      "maximumIntersection": 3,
+      "frequencyMinimum": 70,
+      "frequencyMaximum": 71,
+      "frequencyStandardDeviation": 0.5
+    }
+  }
+}
