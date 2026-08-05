@@ -1,0 +1,884 @@
+{
+  "protocol": "RTP-SUM-009 — Protocolo de Revalidação Multissementes do Artefato Oficial",
+  "mode": "battery",
+  "authorization": {
+    "id": "AUT-USUARIO-20260805-0938-RTP-SUM-009",
+    "confirmation": "AUTORIZACAO-EXPLICITA-CONFIRMADA"
+  },
+  "generatedAt": "2026-08-05T12:47:12.070Z",
+  "git": {
+    "commit": "02717317bfa523f125324b406a68c07b128a396d",
+    "branch": "main",
+    "status": ""
+  },
+  "environment": {
+    "node": "v22.23.1",
+    "v8": "12.4.254.21-node.56",
+    "platform": "linux",
+    "architecture": "x64",
+    "operatingSystemRelease": "6.17.0-1020-azure",
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "outputValidation": {
+    "path": "/tmp/su-mega-rtp-sum-009-battery-20260805-0938",
+    "existed": false,
+    "empty": true
+  },
+  "seedsVerification": {
+    "path": "generator/multiseed/seeds.json",
+    "sha256": "03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911",
+    "count": 30,
+    "unique": true,
+    "excludesReference": true,
+    "exactApprovedList": true,
+    "status": "planned-not-authorized-for-execution"
+  },
+  "identity": {
+    "protocol": "RTP-SUM-009 — Protocolo de Revalidação Multissementes do Artefato Oficial",
+    "mode": "identity",
+    "generatedAt": "2026-08-05T12:42:53.255Z",
+    "git": {
+      "commit": "02717317bfa523f125324b406a68c07b128a396d",
+      "branch": "main",
+      "status": ""
+    },
+    "officialGeneratorCommit": "ce51511f114aface34871ef23a67897fafaab5f9",
+    "protocolBaseCommit": "d21aad3305ecd08fbb2fb36419ad1a9c3435fe9a",
+    "verifiedFiles": [
+      {
+        "relativePath": "generator/config.example.json",
+        "expectedSha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+        "actualSha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/lib/combinations.mjs",
+        "expectedSha256": "43e57827f7077dfcd9e0b9fd9caa6a2e376ff657e25f7a1430fac45703b42c60",
+        "actualSha256": "43e57827f7077dfcd9e0b9fd9caa6a2e376ff657e25f7a1430fac45703b42c60",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/lib/generator-core.mjs",
+        "expectedSha256": "694da8158293edd5ae700f2a57d0b11a7466d645fa3cd97b163cbe3ea8838344",
+        "actualSha256": "694da8158293edd5ae700f2a57d0b11a7466d645fa3cd97b163cbe3ea8838344",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/lib/io.mjs",
+        "expectedSha256": "e14132a5201221a0ef552368878eb31435139af100032f921dbd32a44d8b449f",
+        "actualSha256": "e14132a5201221a0ef552368878eb31435139af100032f921dbd32a44d8b449f",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/lib/metrics-core.mjs",
+        "expectedSha256": "02ed5f2235a612d69a8080c6573b84b1cec90225abea37548744f6329f1d8bce",
+        "actualSha256": "02ed5f2235a612d69a8080c6573b84b1cec90225abea37548744f6329f1d8bce",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/lib/rng.mjs",
+        "expectedSha256": "4465f864684717eee26c8bbc3061308891d50a24171c837095a43f3ee4c04b45",
+        "actualSha256": "4465f864684717eee26c8bbc3061308891d50a24171c837095a43f3ee4c04b45",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/runs/seed-202608031101/config.json",
+        "expectedSha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+        "actualSha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+        "matches": true
+      },
+      {
+        "relativePath": "generator/runs/seed-202608031101/games.csv",
+        "expectedSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+        "actualSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+        "matches": true
+      }
+    ],
+    "seedsVerification": {
+      "path": "generator/multiseed/seeds.json",
+      "sha256": "03517ba0a8e44d7447916a45cb3535421c2c18b7f145b031ba33793402520911",
+      "count": 30,
+      "unique": true,
+      "excludesReference": true,
+      "exactApprovedList": true,
+      "status": "planned-not-authorized-for-execution"
+    },
+    "configuration": {
+      "path": "generator/config.example.json",
+      "sha256": "4641a200d7fab9895cd7a7af4a9f17710b974fe0b051a15a51fe8e1f5c3432c1",
+      "seed": "202608031101"
+    },
+    "expectedPortfolioSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+    "actualPortfolioSha256": "d175ca529da9699b3e07ed3b23df42ca7fbae21bc0899d0c0c68ee0b804191be",
+    "portfolioMatches": true,
+    "expectedMetrics": {
+      "games": 705,
+      "uniqueGames": 705,
+      "candidatesEvaluated": 1711000,
+      "phaseAccepted": {
+        "A": 120,
+        "B": 35,
+        "C": 550
+      },
+      "pairClosureGame": 155,
+      "pairsCovered": 1770,
+      "distinctTriples": 13210,
+      "distinctQuadruples": 10575,
+      "repeatedQuadruples": 0,
+      "maximumIntersection": 3,
+      "frequencyMinimum": 70,
+      "frequencyMaximum": 71,
+      "frequencyStandardDeviation": 0.5
+    },
+    "actualMetrics": {
+      "games": 705,
+      "uniqueGames": 705,
+      "candidatesEvaluated": 1711000,
+      "phaseAccepted": {
+        "A": 120,
+        "B": 35,
+        "C": 550
+      },
+      "pairClosureGame": 155,
+      "pairsCovered": 1770,
+      "distinctTriples": 13210,
+      "distinctQuadruples": 10575,
+      "repeatedQuadruples": 0,
+      "maximumIntersection": 3,
+      "frequencyMinimum": 70,
+      "frequencyMaximum": 71,
+      "frequencyStandardDeviation": 0.5
+    },
+    "metricMismatches": [],
+    "approved": true
+  },
+  "seedsSource": {
+    "protocol": "RTP-SUM-009",
+    "status": "planned-not-authorized-for-execution",
+    "referenceSeed": "202608031101",
+    "seeds": [
+      "202608040001",
+      "202608040002",
+      "202608040003",
+      "202608040004",
+      "202608040005",
+      "202608040006",
+      "202608040007",
+      "202608040008",
+      "202608040009",
+      "202608040010",
+      "202608040011",
+      "202608040012",
+      "202608040013",
+      "202608040014",
+      "202608040015",
+      "202608040016",
+      "202608040017",
+      "202608040018",
+      "202608040019",
+      "202608040020",
+      "202608040021",
+      "202608040022",
+      "202608040023",
+      "202608040024",
+      "202608040025",
+      "202608040026",
+      "202608040027",
+      "202608040028",
+      "202608040029",
+      "202608040030"
+    ]
+  },
+  "results": [
+    {
+      "seed": "202608040001",
+      "portfolioSha256": "4f4aa4463d3aad4089828aed6522f26178bc42470ae0f7c346b28e686d181c8c",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1713600,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 36,
+          "C": 549
+        },
+        "pairClosureGame": 156,
+        "pairsCovered": 1770,
+        "distinctTriples": 13247,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040002",
+      "portfolioSha256": "84babb816b495a78c21b43e6f698da89a5678e198b75dfb3108e5e642328c525",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13178,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040003",
+      "portfolioSha256": "da3287fcc21b530f796b29af1b8aedbfc4b2334983ca73e73c295a9e6c164b23",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13221,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040004",
+      "portfolioSha256": "b7cbeafa73f2774984cba226115687be85e69b75479974af05c344b1e27a03ed",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13209,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040005",
+      "portfolioSha256": "1ad40ac2886b1844610ea8dc99061ea2aee6e4dd036ecb1062bae7f3a8d089cf",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1713600,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 36,
+          "C": 549
+        },
+        "pairClosureGame": 156,
+        "pairsCovered": 1770,
+        "distinctTriples": 13180,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040006",
+      "portfolioSha256": "0286172c01e93f5e183416269ca19218540cdf845a54004ea83480013f5ae680",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13211,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040007",
+      "portfolioSha256": "32ced7215d28f6d2951f4e45b6f81851992c096d710ae288fdb7d5f8590cb377",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13193,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040008",
+      "portfolioSha256": "3702deec787f1114b093cf73e7afd44372d70baa7bf152c16c0fc305b3051209",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13214,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040009",
+      "portfolioSha256": "7a13b98f59d5ec8216c9c40cc7962b788c3a07d589cc927ab748103739a3ef22",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13197,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040010",
+      "portfolioSha256": "a315a4ddd67593b57def072bb9e4892f022b811af397692e8871ed3503906904",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13220,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040011",
+      "portfolioSha256": "7dd159934663b53991b4551bb7f2046f38dbfbc55a914f6a04342e1f198232e3",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13211,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040012",
+      "portfolioSha256": "4517bc24850ff747936e36f7f91ff0d005de859f9e930bb86bd33fa8862c1bd0",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13214,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 69,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5322906474223771
+      }
+    },
+    {
+      "seed": "202608040013",
+      "portfolioSha256": "ea4da92163337ca8ff4feea24c9af2f2f87c51388d28bc478882c3b08a08c099",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13187,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040014",
+      "portfolioSha256": "ed2d8815c850f94556bae99364d5084d785fc8fb68f55e5a7c96d6841620083f",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1705800,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 33,
+          "C": 552
+        },
+        "pairClosureGame": 153,
+        "pairsCovered": 1770,
+        "distinctTriples": 13221,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 69,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5322906474223771
+      }
+    },
+    {
+      "seed": "202608040015",
+      "portfolioSha256": "995449e306cedad5774929e80575371a2cde7265a8065c230f69c568f94a04dc",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13217,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040016",
+      "portfolioSha256": "66e90d3b07a0947c8d80902ddfd6b5e5883d0af238ee784d46454e8acd2a1691",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13208,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040017",
+      "portfolioSha256": "7b2d4083c2b0785ec69cf62643c7c5c5b66ef256ee18aa4c6e57b83dc2a8adf0",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13193,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040018",
+      "portfolioSha256": "f4e6a0c55ca25a80ffaac78ca116639c698aa80c79287dadf2c2f4bf31172f1b",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13207,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040019",
+      "portfolioSha256": "fb37bc9a23de444503f0d1d7c34c3da16e1ddcd03504f7cd1890ab4416fd0b41",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13195,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 69,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5322906474223771
+      }
+    },
+    {
+      "seed": "202608040020",
+      "portfolioSha256": "808b6db009bef28aa147a605318621b2e3dc4c900ed460534a40e366b99d0cdd",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13195,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040021",
+      "portfolioSha256": "87702bab025c6e5a9aa30e87217e841b66714e21e2b9744ba4efe8f075da104d",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13239,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040022",
+      "portfolioSha256": "a6993f98ecf0dc17d244de77ccddd377fe0396cf9304b78e2a96fd60dd0a8f3f",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13188,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040023",
+      "portfolioSha256": "89d6d06299eebeeb24f005d41f8219497078bc6e68b633bb2c1ca06a5bd48200",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13190,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040024",
+      "portfolioSha256": "7e9852380ed0e78dc166313d5dbcb49bdd8a02a53f30c1760174103a497305e5",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13206,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040025",
+      "portfolioSha256": "f32f4d66d26218ed266cbb92effe84f302ead740ea75829eedb3440113c967ca",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13197,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040026",
+      "portfolioSha256": "9cc1cb3a7808e411ca4a5d64e070bba3b90fecdad8ac0f3469ac659118fcb32b",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13208,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040027",
+      "portfolioSha256": "0e1a47979ec3b558d25676d5936bb2782eba09b4bfc3dfbd290572f063f944cf",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1713600,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 36,
+          "C": 549
+        },
+        "pairClosureGame": 156,
+        "pairsCovered": 1770,
+        "distinctTriples": 13214,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040028",
+      "portfolioSha256": "f5f87f76215daea230da1c837f1aaf1cd58d84b3e9841d8d9478eb227a36bed5",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1711000,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 35,
+          "C": 550
+        },
+        "pairClosureGame": 155,
+        "pairsCovered": 1770,
+        "distinctTriples": 13200,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040029",
+      "portfolioSha256": "1eb2698297bad32b4bc146a2f6b806cba9bbf9a69dd51f816d75e7eeb9b3cc4b",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1713600,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 36,
+          "C": 549
+        },
+        "pairClosureGame": 156,
+        "pairsCovered": 1770,
+        "distinctTriples": 13225,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    },
+    {
+      "seed": "202608040030",
+      "portfolioSha256": "72815ee584ce572072f7eb1b930d4359956877c88812d96671fafd0147bd50d9",
+      "metrics": {
+        "games": 705,
+        "uniqueGames": 705,
+        "candidatesEvaluated": 1708400,
+        "phaseAccepted": {
+          "A": 120,
+          "B": 34,
+          "C": 551
+        },
+        "pairClosureGame": 154,
+        "pairsCovered": 1770,
+        "distinctTriples": 13201,
+        "distinctQuadruples": 10575,
+        "repeatedQuadruples": 0,
+        "maximumIntersection": 3,
+        "frequencyMinimum": 70,
+        "frequencyMaximum": 71,
+        "frequencyStandardDeviation": 0.5
+      }
+    }
+  ]
+}

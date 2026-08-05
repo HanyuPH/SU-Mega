@@ -1,0 +1,45 @@
+{
+  "document": "RTP-SUM-010 — Proveniência da execução e do artefato",
+  "constitutionalDecision": "EC-SUM-008 — Constituição Oficial da SU Mega v1.9",
+  "repository": "HanyuPH/SU-Mega",
+  "pullRequest": {
+    "number": 7,
+    "status": "closed-without-merge",
+    "temporaryWorkflowNotMerged": true
+  },
+  "workflowRun": {
+    "id": 31006810749,
+    "name": "Executar bateria RTP-SUM-009 autorizada"
+  },
+  "githubActionsArtifact": {
+    "id": 8930794467,
+    "name": "RTP-SUM-009-bateria-30-sementes-20260805",
+    "zipSha256": "56d8b0ff3a6f85e27b7058ab777762862440ee5d88d1b741f52159765895ae8f",
+    "temporaryExpirationAt": "2026-11-03T12:42:36Z"
+  },
+  "execution": {
+    "commit": "02717317bfa523f125324b406a68c07b128a396d",
+    "branch": "main",
+    "cleanTree": true,
+    "authorizationId": "AUT-USUARIO-20260805-0938-RTP-SUM-009",
+    "referenceIdentityApproved": true,
+    "executedSeeds": 30
+  },
+  "officialHashes": {
+    "githubActionsArtifactZip": "56d8b0ff3a6f85e27b7058ab777762862440ee5d88d1b741f52159765895ae8f",
+    "consolidatedTarGz": "5b0595b071b217dedfae69212256ae87ff86df993e249f35af31967de507d26a",
+    "multiseedSummary": "eb95946804f46eb5fcbebeac77b51885d55a08c4c8dbaa1cb8dd781c8c188bb8",
+    "identityReport": "5e86d1d336e90a42b17cf9d32593a36bb537913cba8eb440df7b5975b4f6ca8a",
+    "internalFilesManifest": "7d0af586bf6ccce0c6b4586dee84ecc203b8c0c47aa92448436a5cd065d81c99",
+    "orderedThirtyPortfolioHashes": "790b458de46b09d6b8a30227cff89da6b0b566ba53e9d7e8a29c0b4c82bcde21"
+  },
+  "restrictions": [
+    "documentary-preservation-only",
+    "no-new-battery",
+    "no-generator-change",
+    "no-c2-change",
+    "no-c3-study",
+    "no-c3-candidate",
+    "no-probabilistic-superiority-claim"
+  ]
+}
