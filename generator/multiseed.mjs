@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
+import { readdir, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -19,6 +20,7 @@ import {
 
 const execFileAsync = promisify(execFile);
 const BATTERY_CONFIRMATION = "AUTORIZACAO-EXPLICITA-CONFIRMADA";
+const EXPECTED_BATTERY_BRANCH = "main";
 
 export function parseArguments(args) {
   const parsed = { mode: "identity" };
@@ -41,6 +43,15 @@ export function parseArguments(args) {
 
 function sha256Text(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function normalizeRelativePath(value) {
+  return value.split(path.sep).join("/");
+}
+
+function isSameOrNested(parentPath, candidatePath) {
+  const relative = path.relative(parentPath, candidatePath);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
 async function gitCommand(repositoryRoot, args) {
@@ -76,6 +87,105 @@ export function validateBatteryAuthorization(args, gitState) {
   }
   if (args.confirmBattery !== BATTERY_CONFIRMATION) {
     throw new Error(`A bateria permanece bloqueada. Use --confirm-battery ${BATTERY_CONFIRMATION} somente após nova autorização explícita.`);
+  }
+  if (gitState.branch !== EXPECTED_BATTERY_BRANCH) {
+    throw new Error(`Branch divergente: esperada ${EXPECTED_BATTERY_BRANCH}, encontrada ${gitState.branch}.`);
+  }
+}
+
+export function validateApprovedSeedsDocument({
+  seedsDocument,
+  policy,
+  actualSha256,
+  actualRelativePath,
+}) {
+  if (!policy?.path || !policy?.sha256 || !Array.isArray(policy.approvedSeeds)) {
+    throw new Error("Manifesto inválido: política da lista de sementes não foi preservada integralmente.");
+  }
+  if (actualRelativePath !== policy.path) {
+    throw new Error(`Arquivo de sementes divergente: esperado ${policy.path}, encontrado ${actualRelativePath}.`);
+  }
+  if (actualSha256 !== policy.sha256) {
+    throw new Error(`Hash da lista de sementes divergente: esperado ${policy.sha256}, encontrado ${actualSha256}.`);
+  }
+
+  const seeds = Array.isArray(seedsDocument?.seeds) ? seedsDocument.seeds.map(String) : [];
+  const approvedSeeds = policy.approvedSeeds.map(String);
+  if (seeds.length !== policy.count || seeds.length !== 30) {
+    throw new Error(`Quantidade de sementes divergente: esperadas 30, encontradas ${seeds.length}.`);
+  }
+  if (new Set(seeds).size !== seeds.length) {
+    throw new Error("Lista de sementes divergente: existem sementes duplicadas.");
+  }
+  if (String(seedsDocument.referenceSeed) !== String(policy.referenceSeed)) {
+    throw new Error(`Semente de referência divergente: esperada ${policy.referenceSeed}, encontrada ${seedsDocument.referenceSeed}.`);
+  }
+  if (seeds.includes(String(policy.referenceSeed))) {
+    throw new Error("Lista de sementes divergente: a semente de referência não pode integrar a bateria.");
+  }
+  if (JSON.stringify(seeds) !== JSON.stringify(approvedSeeds)) {
+    throw new Error("Lista de sementes divergente: o conteúdo ou a ordem não corresponde exatamente à lista aprovada.");
+  }
+  if (seedsDocument.status !== policy.requiredStatus) {
+    throw new Error(`Estado da lista de sementes divergente: esperado ${policy.requiredStatus}, encontrado ${seedsDocument.status}.`);
+  }
+
+  return {
+    path: actualRelativePath,
+    sha256: actualSha256,
+    count: seeds.length,
+    unique: true,
+    excludesReference: true,
+    exactApprovedList: true,
+    status: seedsDocument.status,
+  };
+}
+
+export async function verifyApprovedSeeds({ repositoryRoot, seedsPath, seedsDocument, manifest }) {
+  const actualRelativePath = normalizeRelativePath(path.relative(repositoryRoot, seedsPath));
+  const actualSha256 = await sha256File(seedsPath);
+  return validateApprovedSeedsDocument({
+    seedsDocument,
+    policy: manifest.seedList,
+    actualSha256,
+    actualRelativePath,
+  });
+}
+
+export async function validateBatteryOutputDirectory({
+  repositoryRoot,
+  generatorRoot,
+  outputDirectory,
+  manifest,
+}) {
+  const resolvedOutput = path.resolve(outputDirectory);
+  const forbiddenRoots = [
+    repositoryRoot,
+    generatorRoot,
+    ...(manifest.officialResultDirectories ?? []).map((relativePath) => path.resolve(repositoryRoot, relativePath)),
+  ];
+
+  for (const forbiddenRoot of forbiddenRoots) {
+    if (isSameOrNested(forbiddenRoot, resolvedOutput) || isSameOrNested(resolvedOutput, forbiddenRoot)) {
+      throw new Error(`Diretório de saída inválido: ${resolvedOutput} conflita com área oficial ou estrutural ${forbiddenRoot}.`);
+    }
+  }
+
+  try {
+    const outputStat = await stat(resolvedOutput);
+    if (!outputStat.isDirectory()) {
+      throw new Error(`Diretório de saída inválido: ${resolvedOutput} existe e não é um diretório.`);
+    }
+    const entries = await readdir(resolvedOutput);
+    if (entries.length > 0) {
+      throw new Error(`Diretório de saída não está vazio: ${resolvedOutput} contém ${entries.length} item(ns).`);
+    }
+    return { path: resolvedOutput, existed: true, empty: true };
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return { path: resolvedOutput, existed: false, empty: true };
+    }
+    throw error;
   }
 }
 
@@ -125,7 +235,14 @@ function compareExpectedMetrics(actual, expected) {
   return mismatches;
 }
 
-export async function runIdentity({ repositoryRoot, generatorRoot, manifest, outputDirectory, gitState = null }) {
+export async function runIdentity({
+  repositoryRoot,
+  generatorRoot,
+  manifest,
+  outputDirectory,
+  gitState = null,
+  seedsVerification = null,
+}) {
   const verifiedFiles = await verifyOfficialArtifact(repositoryRoot, manifest);
   const config = await readJson(path.join(repositoryRoot, manifest.configuration.path));
   const identityConfig = structuredClone(config);
@@ -147,6 +264,7 @@ export async function runIdentity({ repositoryRoot, generatorRoot, manifest, out
     officialGeneratorCommit: manifest.officialGeneratorCommit,
     protocolBaseCommit: manifest.protocolBaseCommit,
     verifiedFiles,
+    seedsVerification,
     configuration: {
       path: manifest.configuration.path,
       sha256: manifest.configuration.sha256,
@@ -194,18 +312,37 @@ async function runOneSeed({ seed, baseConfig, outputDirectory }) {
   };
 }
 
-export async function runBattery({ repositoryRoot, generatorRoot, manifest, seedsDocument, outputDirectory, args, gitState }) {
+export async function runBattery({
+  repositoryRoot,
+  generatorRoot,
+  manifest,
+  seedsDocument,
+  seedsVerification,
+  outputDirectory,
+  args,
+  gitState,
+}) {
   validateBatteryAuthorization(args, gitState);
+  const outputValidation = await validateBatteryOutputDirectory({
+    repositoryRoot,
+    generatorRoot,
+    outputDirectory,
+    manifest,
+  });
+
   const identityDirectory = path.join(outputDirectory, "identity");
-  const identity = await runIdentity({ repositoryRoot, generatorRoot, manifest, outputDirectory: identityDirectory, gitState });
+  const identity = await runIdentity({
+    repositoryRoot,
+    generatorRoot,
+    manifest,
+    outputDirectory: identityDirectory,
+    gitState,
+    seedsVerification,
+  });
   if (!identity.approved) throw new Error("Bateria cancelada porque o teste de identidade não foi aprovado.");
 
   const baseConfig = await readJson(path.join(repositoryRoot, manifest.configuration.path));
   const seeds = seedsDocument.seeds.map(String);
-  if (seeds.length === 0 || new Set(seeds).size !== seeds.length) {
-    throw new Error("Lista de sementes vazia ou com duplicidades.");
-  }
-
   const results = [];
   for (const seed of seeds) {
     process.stdout.write(`Executando semente ${seed} (${results.length + 1}/${seeds.length})...\n`);
@@ -229,6 +366,8 @@ export async function runBattery({ repositoryRoot, generatorRoot, manifest, seed
       operatingSystemRelease: os.release(),
       cpuModel: os.cpus()[0]?.model ?? null,
     },
+    outputValidation,
+    seedsVerification,
     identity,
     seedsSource: seedsDocument,
     results,
@@ -246,6 +385,13 @@ export async function main(argv = process.argv.slice(2)) {
   const seedsPath = path.resolve(args.seeds ?? path.join(generatorRoot, "multiseed", "seeds.json"));
   const outputDirectory = path.resolve(args.out ?? path.join(generatorRoot, "runs", "multiseed-pending"));
   const manifest = await readJson(manifestPath);
+  const seedsDocument = await readJson(seedsPath);
+  const seedsVerification = await verifyApprovedSeeds({
+    repositoryRoot,
+    seedsPath,
+    seedsDocument,
+    manifest,
+  });
   const gitState = args.expectedCommit || args.mode === "battery" ? await readGitState(repositoryRoot) : null;
 
   if (args.expectedCommit && gitState.commit !== args.expectedCommit) {
@@ -253,13 +399,28 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   if (args.mode === "identity") {
-    const report = await runIdentity({ repositoryRoot, generatorRoot, manifest, outputDirectory, gitState });
+    const report = await runIdentity({
+      repositoryRoot,
+      generatorRoot,
+      manifest,
+      outputDirectory,
+      gitState,
+      seedsVerification,
+    });
     process.stdout.write(`Teste de identidade aprovado. Carteira SHA-256: ${report.actualPortfolioSha256}\n`);
     return report;
   }
 
-  const seedsDocument = await readJson(seedsPath);
-  const summary = await runBattery({ repositoryRoot, generatorRoot, manifest, seedsDocument, outputDirectory, args, gitState });
+  const summary = await runBattery({
+    repositoryRoot,
+    generatorRoot,
+    manifest,
+    seedsDocument,
+    seedsVerification,
+    outputDirectory,
+    args,
+    gitState,
+  });
   process.stdout.write(`Bateria concluída: ${summary.results.length} sementes.\n`);
   return summary;
 }
