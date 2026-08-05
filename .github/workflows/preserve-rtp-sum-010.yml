@@ -1,0 +1,97 @@
+name: Preservar artefatos do RTP-SUM-010
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/preserve-rtp-sum-010.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  preserve-documentary-artifacts:
+    if: github.event.pull_request.head.ref == 'automation/preserve-rtp-sum-010-artifact'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_BRANCH: agent/preservacao-rtp-sum-010
+      ARTIFACT_ID: "8930794467"
+      ARTIFACT_ZIP_SHA256: 56d8b0ff3a6f85e27b7058ab777762862440ee5d88d1b741f52159765895ae8f
+      TAR_GZ_SHA256: 5b0595b071b217dedfae69212256ae87ff86df993e249f35af31967de507d26a
+      SUMMARY_SHA256: eb95946804f46eb5fcbebeac77b51885d55a08c4c8dbaa1cb8dd781c8c188bb8
+      IDENTITY_SHA256: 5e86d1d336e90a42b17cf9d32593a36bb537913cba8eb440df7b5975b4f6ca8a
+      FILES_MANIFEST_SHA256: 7d0af586bf6ccce0c6b4586dee84ecc203b8c0c47aa92448436a5cd065d81c99
+      PORTFOLIOS_AGGREGATE_SHA256: 790b458de46b09d6b8a30227cff89da6b0b566ba53e9d7e8a29c0b4c82bcde21
+      OFFICIAL_COMMIT: 02717317bfa523f125324b406a68c07b128a396d
+      AUTHORIZATION_ID: AUT-USUARIO-20260805-0938-RTP-SUM-009
+    steps:
+      - name: Baixar a branch documental
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Confirmar escopo inicial
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = "$TARGET_BRANCH"
+          test -z "$(git status --porcelain)"
+          test -f generator/docs/RTP-SUM-010-resultado-revalidacao-multissementes-oficial.md
+          test ! -e generator/evidence/rtp-sum-010
+
+      - name: Baixar e conferir o artefato temporário
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/rtp-sum-010-artifact.zip
+          echo "$ARTIFACT_ZIP_SHA256  /tmp/rtp-sum-010-artifact.zip" | sha256sum -c -
+          mkdir -p /tmp/rtp-sum-010-artifact
+          unzip -q /tmp/rtp-sum-010-artifact.zip -d /tmp/rtp-sum-010-artifact
+
+      - name: Preservar documentos e evidências
+        run: |
+          set -euo pipefail
+          mkdir -p generator/evidence/rtp-sum-010
+          cat > /tmp/evidence-json.gz.b64 <<'B64'
+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
+B64
+          base64 -d /tmp/evidence-json.gz.b64 | gzip -d > generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json
+          ARTIFACT_ROOT=/tmp/rtp-sum-010-artifact/su-mega-rtp-sum-009-battery-20260805-0938
+          cp "$ARTIFACT_ROOT/identity/identity-report.json" generator/evidence/rtp-sum-010/identity-report.json
+          cp "$ARTIFACT_ROOT/multiseed-summary.json" generator/evidence/rtp-sum-010/multiseed-summary.json
+          cp "$ARTIFACT_ROOT/files-sha256.txt" generator/evidence/rtp-sum-010/files-sha256.txt
+          cp /tmp/rtp-sum-010-artifact/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz generator/evidence/rtp-sum-010/
+          cat > /tmp/generate-preservation.py.gz.b64 <<'B64'
+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
+B64
+          base64 -d /tmp/generate-preservation.py.gz.b64 | gzip -d > /tmp/generate-preservation.py
+          python /tmp/generate-preservation.py
+
+      - name: Verificar hashes e escopo documental
+        run: |
+          set -euo pipefail
+          echo "$TAR_GZ_SHA256  generator/evidence/rtp-sum-010/RTP-SUM-009-bateria-30-sementes-20260805.tar.gz" | sha256sum -c -
+          echo "$SUMMARY_SHA256  generator/evidence/rtp-sum-010/multiseed-summary.json" | sha256sum -c -
+          echo "$IDENTITY_SHA256  generator/evidence/rtp-sum-010/identity-report.json" | sha256sum -c -
+          echo "$FILES_MANIFEST_SHA256  generator/evidence/rtp-sum-010/files-sha256.txt" | sha256sum -c -
+          test "$(jq -r '.execution.officialCommit' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "$OFFICIAL_COMMIT"
+          test "$(jq -r '.execution.authorizationId' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "$AUTHORIZATION_ID"
+          test "$(jq -r '.battery.executedSeeds' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "30"
+          test "$(jq -r '.hashes.orderedPortfolioHashesSha256' generator/evidence/rtp-sum-010/RTP-SUM-010-evidencias-resumo.json)" = "$PORTFOLIOS_AGGREGATE_SHA256"
+          test "$(jq -r '.rows | length' generator/evidence/rtp-sum-010/portfolio-hashes.json)" = "30"
+          test -z "$(git status --short | awk '{print $2}' | grep -Ev '^generator/evidence/rtp-sum-010/' || true)"
+          test ! -e .github/workflows/execute-rtp-sum-009-battery.yml
+
+      - name: Commitar na branch documental
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generator/evidence/rtp-sum-010
+          git commit -m "docs: preservar evidências definitivas do RTP-SUM-010"
+          git push origin "HEAD:$TARGET_BRANCH"
