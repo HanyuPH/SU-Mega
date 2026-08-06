@@ -8,6 +8,15 @@ A única fonte de verdade dos jogos é a planilha oficial **SU Mega - C2.xlsx**.
 
 Qualquer mudança futura deve ser feita primeiro na planilha oficial e somente depois refletida no aplicativo.
 
+## Versões documentadas
+
+- versão estável: **v19**;
+- branch estável: `main`;
+- beta mais recente documentada: **v29**;
+- commit de publicação da Beta v29: `a9c3ec508a5fd308de8800c10e9cb1aa7757763e`;
+- branch Beta ativa: `beta`;
+- arquivo de registro: `VERSION`.
+
 ## Funcionalidades
 
 - status Pendente, Registrado e Apostado;
@@ -42,9 +51,12 @@ A consulta manual também está disponível no GitHub Actions por meio de `workf
 - `app.js` — carteira e marcações;
 - `contests.js` — histórico, conferência e comparação;
 - `official-results.js` — consulta e registro automático;
+- `cloud-sync-v2.js` — autenticação e sincronização da versão estável;
+- `service-worker.js` — PWA e funcionamento offline;
 - `scripts/update-megasena-result.mjs` — coletor da CAIXA;
 - `data/games-01.js` a `data/games-10.js` — Carteira C2;
-- `tests/validate-contests.mjs` — testes da conferência.
+- `tests/validate-contests.mjs` — testes da conferência;
+- `VERSION` — registro formal da versão, carteira e hashes oficiais.
 
 ## Validação
 
@@ -63,12 +75,26 @@ Hash SHA-256 dos 705 jogos:
 
 `518af4d8fc79783d4eecc4ab7c233424c51640a7372bf1d25437ebf3fa5af370`
 
+## Conta, privacidade e sincronização
+
+O aplicativo adota funcionamento **local-first**:
+
+- marcações e concursos são mantidos no `localStorage` para uso imediato e funcionamento offline;
+- o backup manual permanece disponível e não é substituído pela nuvem;
+- sem autenticação, os dados operacionais permanecem apenas no navegador utilizado.
+
+Quando o usuário entra com e-mail e senha:
+
+- a autenticação é processada pelo Firebase Authentication;
+- status dos jogos e concursos são sincronizados com o Cloud Firestore;
+- os dados são gravados na árvore privada correspondente ao `uid` autenticado;
+- listeners em tempo real atualizam os dispositivos conectados à mesma conta;
+- alterações feitas offline permanecem localmente até a reconexão.
+
+As regras do Firestore autorizam leitura e gravação somente ao usuário autenticado cujo `uid` corresponda ao caminho acessado. O aplicativo não envia a carteira oficial nem apostas para serviços publicitários. Credenciais não são armazenadas pelo código do aplicativo.
+
 ## GitHub Pages
 
 Endereço oficial:
 
 `https://hanyuph.github.io/SU-Mega/`
-
-## Privacidade
-
-Jogos, marcações e concursos ficam no navegador do usuário. O aplicativo não envia apostas ou dados pessoais para servidores externos.
