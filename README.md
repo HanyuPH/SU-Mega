@@ -8,6 +8,10 @@ A única fonte de verdade dos jogos é a planilha oficial **SU Mega - C2.xlsx**.
 
 Qualquer mudança futura deve ser feita primeiro na planilha oficial e somente depois refletida no aplicativo.
 
+A antiga planilha **SU Mega - C1.xlsx** está classificada como carteira histórica substituída e não possui força operacional vigente.
+
+A classificação completa dos arquivos oficiais, históricos e substituídos está registrada em `docs/REGISTRO-ARQUIVOS-OFICIAIS.md`.
+
 ## Versões documentadas
 
 - versão estável: **v19**;
@@ -41,6 +45,8 @@ O workflow `.github/workflows/update-megasena-result.yml` consulta a API oficial
 - `data/ultimo-concurso.json`;
 - `data/concursos-oficiais.json`.
 
+O arquivo local `megasena-download-resultados(1).csv`, encerrado no concurso 3024 de 27/06/2026, está classificado apenas como snapshot histórico e não é fonte operacional vigente.
+
 A consulta manual também está disponível no GitHub Actions por meio de `workflow_dispatch`.
 
 ## Estrutura principal
@@ -56,7 +62,8 @@ A consulta manual também está disponível no GitHub Actions por meio de `workf
 - `scripts/update-megasena-result.mjs` — coletor da CAIXA;
 - `data/games-01.js` a `data/games-10.js` — Carteira C2;
 - `tests/validate-contests.mjs` — testes da conferência;
-- `VERSION` — registro formal da versão, carteira, hashes e estado constitucional.
+- `VERSION` — registro formal da versão, carteira, hashes, antecessora e estado constitucional;
+- `docs/REGISTRO-ARQUIVOS-OFICIAIS.md` — classificação dos arquivos oficiais e históricos analisados.
 
 ## Validação
 
@@ -100,6 +107,7 @@ As regras do Firestore autorizam leitura e gravação somente ao usuário autent
 - última emenda constitucional documentada: **EC-SUM-008**;
 - a EC-SUM-008 ratificou integralmente o RTP-SUM-010 e determinou a preservação definitiva de suas evidências;
 - a Carteira Oficial SU Mega – C2 permanece integralmente preservada;
+- a Carteira C1, snapshots históricos e painéis substituídos não alteram o estado oficial atual;
 - estudos, relatórios e versões Beta não alteram a carteira sem validação e incorporação constitucional;
 - o aplicativo e o repositório são implementações operacionais derivadas da Constituição e da planilha oficial.
 
