@@ -56,7 +56,7 @@ A consulta manual também está disponível no GitHub Actions por meio de `workf
 - `scripts/update-megasena-result.mjs` — coletor da CAIXA;
 - `data/games-01.js` a `data/games-10.js` — Carteira C2;
 - `tests/validate-contests.mjs` — testes da conferência;
-- `VERSION` — registro formal da versão, carteira e hashes oficiais.
+- `VERSION` — registro formal da versão, carteira, hashes e estado constitucional.
 
 ## Validação
 
@@ -92,6 +92,16 @@ Quando o usuário entra com e-mail e senha:
 - alterações feitas offline permanecem localmente até a reconexão.
 
 As regras do Firestore autorizam leitura e gravação somente ao usuário autenticado cujo `uid` corresponda ao caminho acessado. O aplicativo não envia a carteira oficial nem apostas para serviços publicitários. Credenciais não são armazenadas pelo código do aplicativo.
+
+## Governança documental
+
+- Constituição própria: **Constituição Oficial da SU Mega v1.9**;
+- situação constitucional: oficial;
+- última emenda constitucional documentada: **EC-SUM-008**;
+- a EC-SUM-008 ratificou integralmente o RTP-SUM-010 e determinou a preservação definitiva de suas evidências;
+- a Carteira Oficial SU Mega – C2 permanece integralmente preservada;
+- estudos, relatórios e versões Beta não alteram a carteira sem validação e incorporação constitucional;
+- o aplicativo e o repositório são implementações operacionais derivadas da Constituição e da planilha oficial.
 
 ## GitHub Pages
 
